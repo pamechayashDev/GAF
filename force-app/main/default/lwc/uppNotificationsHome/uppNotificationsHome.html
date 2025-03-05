@@ -1,11 +1,19 @@
 <template>
     <lightning-card title="Messages" icon-name="utility:notification">
-    
+     <template if:false={isParent}>
+
+      <c-upp-notifications-table from='child'></c-upp-notifications-table>
+      <div slot="footer" class="slds-text-align_right" >
+        <lightning-button variant="brand" label="Back" onclick={navigateToHome}></lightning-button>
+    </div>
+    </template>
+    <template if:true={isParent}>
       <c-upp-notifications-table from='parent'></c-upp-notifications-table>
+      <div slot="footer" class="slds-text-align_right" >
+        <lightning-button variant="brand" label="View All" onclick={navigateToAllNotifications}></lightning-button>
+    </div>
+    </template>
         
-        <div slot="footer" class="slds-text-align_right" >
-            <lightning-button variant="brand" label="View All" onclick={navigateToAllNotifications}></lightning-button>
-        </div>
 
     </lightning-card>
 
