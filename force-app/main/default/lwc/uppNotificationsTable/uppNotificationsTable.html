@@ -1,91 +1,150 @@
 <template>
-    
-        <lightning-card hide-header="true">
+
+    <lightning-card hide-header="true">
         <template if:false={isParent}>
-         <div class="filter-container-cover">
-            <div class="filter-container">
-                <div class="filter-group">
-                    <label>Display</label>
-                    <lightning-combobox
-                        name="displayValue"
-                        placeholder = "Unread Only"
-                        value={displayValue}
-                        options={displayOptions}
-                        onchange={handleChange}
-                    ></lightning-combobox>
+            <div class="filter-container-cover">
+                <div class="filter-container">
+                    <div class="filter-group">
+                        <label>Display</label>
+                        <lightning-combobox name="displayValue" placeholder="Unread Only" value={displayValue}
+                            options={displayOptions} onchange={handleChange}></lightning-combobox>
+                    </div>
+                    <div class="filter-group">
+                        <label>Category</label>
+                        <lightning-combobox name="categoryValue" value={categoryValue} placeholder="Select"
+                            options={categoryOptions} onchange={handleChange}></lightning-combobox>
+                    </div>
+                    <div class="dateContainer">
+                        <label>Date Sent</label>
+                        <div class="dates">
+                            <lightning-input type="date" placeholder="From" name="dateFrom" value={dateFrom}
+                                onchange={handleChange}></lightning-input>
+                            <lightning-input type="date" name="dateTo" placeholder="To" value={dateTo}
+                                onchange={handleChange}></lightning-input>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <lightning-input style="margin-top: 20px;" type="checkbox" name="showArchived"
+                            label="Show Archived" checked={showArchived} onchange={handleChange}></lightning-input>
+                    </div>
+
                 </div>
-                <div class="filter-group">
-                    <label>Category</label>
-                    <lightning-combobox
-                        name="categoryValue"
-                        value={categoryValue}
-                        placeholder = "Select"
-                        options={categoryOptions}
-                        onchange={handleChange}
-                    ></lightning-combobox>
-                </div>
-                  <div class="dateContainer">
-                    <label>Date Sent</label>
-                    <div class="dates">
-                    <lightning-input type="date" placeholder="From" name="dateFrom" value={dateFrom} onchange={handleChange}></lightning-input>
-                    <lightning-input type="date" name="dateTo" placeholder="To"  value={dateTo} onchange={handleChange}></lightning-input>
+                <div class="button-group">
+                    <div class="clear-button" onclick={clearFilters}>Clear Filters</div>
+                    <lightning-button label="Apply Filters" onclick={applyFilters} class="apply-button"
+                        variant="destructive"></lightning-button>
                 </div>
             </div>
-                <div class="filter-group">
-                    <lightning-input style="margin-top: 20px;" type="checkbox" name="showArchived" label="Show Archived" checked={showArchived} onchange={handleChange}></lightning-input>
-                </div>
-              
-            </div>
-            <div class="button-group">
-                <div class="clear-button" onclick={clearFilters}>Clear Filters</div>
-                <lightning-button label="Apply Filters" onclick={applyFilters} class="apply-button" variant="destructive"></lightning-button>
-            </div>
-        </div>
         </template>
         <template if:true={notifications.length}>
             <lightning-datatable key-field="Id" data={notifications} columns={columns} hide-checkbox-column="true"
                 onrowaction={handleRowAction} class="custom-datatable">
             </lightning-datatable>
         </template>
-        </lightning-card>
- 
+    </lightning-card>
+
     <template if:false={notifications.length}>
         <p class="slds-m-around_medium">No notifications available.</p>
     </template>
 
     <template if:true={isModalOpen}>
-        <div class="slds-backdrop slds-backdrop_open"></div>
-        <section role="dialog" class="slds-modal slds-fade-in-open custom-modal">
+        <section role="dialog" class="slds-modal slds-fade-in-open">
             <div class="slds-modal__container">
-                <header class="slds-modal__header slds-theme_shade">
-                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
-                        title="Close" onclick={closeModal}>
-                        <lightning-icon icon-name="utility:close" alternative-text="Close"
-                            size="small"></lightning-icon>
-                    </button>
-                    <h2 class="slds-text-heading_medium">Message Details</h2>
-                </header>
-                <div class="slds-modal__content slds-p-around_medium">
-                    <lightning-record-view-form record-id={selectedNotification.Id}
-                        object-api-name="UPP_Notification__c">
-                     <div style="display: grid;grid-template-columns: repeat(2, 1fr);">
-                        <lightning-output-field field-name="Subject__c"></lightning-output-field>
-                        <lightning-output-field field-name="Business_Area__c"></lightning-output-field>
-                        <lightning-output-field field-name="Sent__c"></lightning-output-field>
-                        <lightning-output-field field-name="Message__c"></lightning-output-field>
-                     
+                <div style="padding: 2px;">
 
-                                   <!-- Add more fields here as needed -->
+                    <header class="slds-modal__header">
+                        <div class="slds-text-heading_medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 32 32"
+                                fill="none">
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M31.6308 26.1508L17.5384 3.3614C16.8 2.12953 15.2 2.12953 14.4615 3.3614L0.369217 26.1508C-0.492322 27.5675 0.369217 29.5385 1.90768 29.5385H30.0923C31.6308 29.5385 32.5538 27.5675 31.6308 26.1508ZM16 24.6104C14.9538 24.6104 14.1538 23.8097 14.1538 22.7626C14.1538 21.7155 14.9538 20.9148 16 20.9148C17.0461 20.9148 17.8461 21.7155 17.8461 22.7626C17.8461 23.8097 17.0461 24.6104 16 24.6104ZM17.8461 19.0674C17.8461 19.4369 17.6 19.6833 17.2307 19.6833H14.7692C14.4 19.6833 14.1538 19.4369 14.1538 19.0674V11.0603C14.1538 10.6907 14.4 10.4443 14.7692 10.4443H17.2307C17.6 10.4443 17.8461 10.6907 17.8461 11.0603V19.0674Z"
+                                    fill="#DA9601" />
+                            </svg>
+                            <span class="slds-text-heading_medium" style="margin: 0 4px;">
+                                GAF Message Details
+                            </span>
+                        </div>
+
+                        <div class="aboveHeader">
+                            <strong>Message Body</strong>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 28 27"
+                                fill="none" onclick={closeModal}>
+                                <rect width="28" height="27" fill="transparent" />
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M16.6924 13.1884L23.6924 6.38651C24.0154 6.07497 24.0154 5.60767 23.6924 5.29613L22.6154 4.20574C22.2924 3.8942 21.8077 3.8942 21.4847 4.20574L14.4308 11.0077C14.2154 11.2154 13.8924 11.2154 13.677 11.0077L6.62312 4.15382C6.30005 3.84228 5.81543 3.84228 5.49235 4.15382L4.36158 5.2442C4.03851 5.55574 4.03851 6.02305 4.36158 6.33459L11.4154 13.1365C11.6308 13.3442 11.6308 13.6557 11.4154 13.8634L4.30774 20.7173C3.98466 21.0288 3.98466 21.4961 4.30774 21.8077L5.43851 22.8981C5.76158 23.2096 6.2462 23.2096 6.56928 22.8981L13.6231 16.0961C13.8385 15.8884 14.1616 15.8884 14.377 16.0961L21.4308 22.8981C21.7539 23.2096 22.2385 23.2096 22.5616 22.8981L23.6924 21.8077C24.0154 21.4961 24.0154 21.0288 23.6924 20.7173L16.6924 13.9154C16.477 13.7077 16.477 13.3961 16.6924 13.1884V13.1884Z"
+                                    fill="#FF3B30" />
+                            </svg>
+                        </div>
+                    </header>
+
+
+                    <div class="slds-modal__content slds-p-around_medium">
+
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_1-of-3">
+                                <strong>From :</strong>
+                            </div>
+                            <div class="slds-col slds-size_2-of-3">
+                                <strong>Customer Care</strong>
+                            </div>
+                        </div>
+
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_1-of-3">
+                                <strong>To :</strong>
+                            </div>
+                            <div class="slds-col slds-size_2-of-3">
+                                <strong>barmstrong@dwdistribution.us</strong>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_1-of-3">
+                                <strong>Subject :</strong>
+                            </div>
+                            <div class="slds-col slds-size_2-of-3">
+                                <strong>{selectedNotification.Subject__c}</strong>
+                            </div>
+                        </div>
+
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_1-of-3">
+                                <strong>Sent Date: :</strong>
+                            </div>
+                            <div class="slds-col slds-size_2-of-3">
+                                <strong>{selectedNotification.Sent__c}</strong>
+                            </div>
+                        </div>
+
+                        <hr class="horizontalLine">
+
+
+                        <div class="messageContent">
+
+                            <div class="textContent">
+                                {selectedNotification.Message__c}
+                            </div>
+
+                            <img src={logoImageUrl} style="margin: 8px;" width="150px" alt="logo" />
+
+                        </div>
+
 
                     </div>
-             
-                 
 
-                    </lightning-record-view-form>
+                    <footer class="slds-modal__footer"
+                        style="background-color: #efebe4; border:1.5px solid #010032; border-top: none;">
+                        <lightning-button variant="destructive" class="customButton" label="Delete"
+                            onclick={deleteMessage}></lightning-button>
+                        <lightning-button variant="destructive" label="Close" onclick={closeModal}
+                            class="slds-m-left_x-small customButton"></lightning-button>
+                    </footer>
                 </div>
-             
             </div>
         </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+
+
     </template>
+
 
 </template>
