@@ -2,6 +2,7 @@ import { LightningElement, track, api } from 'lwc';
 import getNotifications from '@salesforce/apex/UPPNotificationController.getUserNotifications';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { updateRecord } from 'lightning/uiRecordApi';
+import logo from "@salesforce/resourceUrl/logo";
 
 export default class UppNotificationsTable extends LightningElement {
     @api from;
@@ -11,6 +12,7 @@ export default class UppNotificationsTable extends LightningElement {
     showArchived = false;
     @track notifications = [];
     isModalOpen = false;
+    logoImageUrl = logo;
     @track selectedNotification = null;
     columns = [
         { label: 'Business Area', fieldName: 'Business_Area__c', type: 'text' },
@@ -19,7 +21,19 @@ export default class UppNotificationsTable extends LightningElement {
         { label: 'Sent', fieldName: 'Sent__c', type: 'date' },
         { label: 'Message', fieldName: 'Message__c', type: 'text', cellAttributes: { style: { fieldName: 'fontStyle' } } }
     ];
-
+    formatDate(dateToFormat){
+        let date = new Date(dateToFormat);
+        let options = {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: true
+        };
+        return new Intl.DateTimeFormat('en-US', options).format(date);
+    }
     getNotificationData() {
         console.log('showArchived' + this.showArchived);
         getNotifications(
@@ -103,6 +117,8 @@ export default class UppNotificationsTable extends LightningElement {
 
         this.selectedNotification = this.notifications.find(notif => notif.Id === notificationId) || null;
         if (this.selectedNotification) {
+       
+            this.selectedNotification.Sent__c =  this.formatDate(this.selectedNotification.Sent__c);
 
             //mark notification read 
             if (!this.selectedNotification.Is_Read__c) {
