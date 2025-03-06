@@ -19,11 +19,11 @@ export default class UppNotificationsTable extends LightningElement {
    @track messageTypeOptions =[];
     displayOptions = [{
         label:'Unread Only',
-        value: false
+        value: 'Unread Only'
     },
 {
       label:'Read',
-        value: true
+        value: 'Read'
 }
   
     ]
