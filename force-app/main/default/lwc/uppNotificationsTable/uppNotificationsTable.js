@@ -1,8 +1,11 @@
-import { LightningElement, track, api } from 'lwc';
+import { LightningElement, track, api ,wire} from 'lwc';
 import getNotifications from '@salesforce/apex/UPPNotificationController.getUserNotifications';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { updateRecord } from 'lightning/uiRecordApi';
+import { getObjectInfo , getPicklistValues } from 'lightning/uiObjectInfoApi';
 import logo from "@salesforce/resourceUrl/logo";
+import UPP_OBJECT from '@salesforce/schema/Upp_Notification__c';
+import MESSAGE_TYPE from '@salesforce/schema/Upp_Notification__c.Message_Type__c'
 
 export default class UppNotificationsTable extends LightningElement {
     @api from;
@@ -11,16 +14,76 @@ export default class UppNotificationsTable extends LightningElement {
     dateTo = null;
     showArchived = false;
     @track notifications = [];
+    displayValue ='Unread Only';
+    messageTypeValue = 'None';
+   @track messageTypeOptions =[];
+    displayOptions = [{
+        label:'Unread Only',
+        value: false
+    },
+{
+      label:'Read',
+        value: true
+}
+  
+    ]
+
     isModalOpen = false;
     logoImageUrl = logo;
     @track selectedNotification = null;
-    columns = [
+   
+    
+   
+    columns= [
         { label: 'Business Area', fieldName: 'Business_Area__c', type: 'text' },
-        { label: 'Category', fieldName: 'Category__c', type: 'text' },
+        { label: 'Message Type', fieldName: 'Message_Type__c', type: 'text' },
         { label: 'Subject', fieldName: 'Subject__c', type: 'button', typeAttributes: { label: { fieldName: 'Subject__c' }, variant: 'base' } },
         { label: 'Sent', fieldName: 'Sent__c', type: 'date' },
-        { label: 'Message', fieldName: 'Message__c', type: 'text', cellAttributes: { style: { fieldName: 'fontStyle' } } }
-    ];
+        {
+            label: 'Message',
+            fieldName: 'Message__c',
+            type: 'customIconText',
+            typeAttributes : {Is_Read__c: {fieldName: 'Is_Read__c'}}
+          
+        },
+    
+        
+    ];;
+  
+    recordTypes = [];
+  master;
+    @wire(getObjectInfo, { objectApiName: UPP_OBJECT })
+    wiredObjectInfo({ data, error }) {
+        if (data) {
+            this.recordTypes = Object.keys(data.recordTypeInfos).map(recordTypeId => ({
+                id: recordTypeId,
+                
+                name: data.recordTypeInfos[recordTypeId].name
+            }));
+            this.master = this.recordTypes[0].id;
+
+            console.log('this.recordTypes'+JSON.stringify(this.recordTypes));
+        } else if (error) {
+            console.error('Error fetching record types', error);
+        }
+    }
+
+   
+    @wire(getPicklistValues, { recordTypeId: "$master",fieldApiName: MESSAGE_TYPE })
+    wiredObjectInfo1({ data, error }) {
+        if (data) {
+            this.messageTypeOptions = data.values.map(picklistItem=>{
+                return {label: picklistItem.value,
+                      value: picklistItem.value
+                };
+            })
+        } else if (error) {
+            console.error('Error fetching picklist values', error);
+        }
+    }
+
+
+
     formatDate(dateToFormat){
         let date = new Date(dateToFormat);
         let options = {
@@ -40,16 +103,19 @@ export default class UppNotificationsTable extends LightningElement {
             {
                 dateFrom: this.dateFrom,
                 dateTo: this.dateTo,
-                showArchived: this.showArchived
+                showArchived: this.showArchived,
+                calledFrom: this.from,
+                isRead:  this.displayValue=='Unread Only'?false:true,
+                messageType:this.messageTypeValue
+
             }
         ).then(data => {
             if (data) {
-
+            
                 let notifications = this.from == 'parent' ? data.slice(0, 3) : data;
                 this.notifications = notifications.map(notification => ({
                     ...notification,
                     UserName: notification.User__r ? notification.User__r.Name : 'N/A',
-                    fontStyle: notification.Is_Read__c ? 'font-weight: normal;' : 'font-weight: bold;'
                 }));
                 console.log(JSON.stringify(data));
             }
@@ -81,10 +147,15 @@ export default class UppNotificationsTable extends LightningElement {
 
     //applying filters
     applyFilters() {
+        console.log(this.messageTypeValue);
         getNotifications({
             dateFrom: this.dateFrom,
             dateTo: this.dateTo,
-            showArchived: this.showArchived
+            showArchived: this.showArchived,
+            calledFrom:'child',
+            isRead: this.displayValue=='Unread Only'?false:true,
+            messageType : this.messageTypeValue
+
         }).then(data => {
             if (data) {
 
@@ -131,7 +202,7 @@ export default class UppNotificationsTable extends LightningElement {
 
                     this.notifications = this.notifications.map(notification => {
                         if (notification.Id === notificationId) {
-                            return { ...notification, Is_Read__c: true, fontStyle: 'font-weight: normal;' };
+                            return { ...notification, Is_Read__c: true};
                         }
                         return notification;
                     });
@@ -146,6 +217,19 @@ export default class UppNotificationsTable extends LightningElement {
 
         }
     }
+    archiveMessage(){
+        console.log('archive');
+        const fields = {
+            Id: this.selectedNotification.Id,
+            RecordTypeId: this.recordTypes[2].id
+        };
+        const recordInput = { fields };
+        updateRecord(recordInput).then((data)=>{
+            this.showToast('Success', 'Message Archived', 'Success');
+            this.notifications =  this.notifications.filter(item => item.Id !== this.selectedNotification.Id);
+        })
+    }
+
 
     closeModal() {
         this.isModalOpen = false;

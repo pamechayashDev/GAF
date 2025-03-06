@@ -6,13 +6,13 @@
                 <div class="filter-container">
                     <div class="filter-group">
                         <label>Display</label>
-                        <lightning-combobox name="displayValue" placeholder="Unread Only" value={displayValue}
+                        <lightning-combobox name="displayValue"  value={displayValue} placeholder ={displayValue}
                             options={displayOptions} onchange={handleChange}></lightning-combobox>
                     </div>
                     <div class="filter-group">
-                        <label>Category</label>
-                        <lightning-combobox name="categoryValue" value={categoryValue} placeholder="Select"
-                            options={categoryOptions} onchange={handleChange}></lightning-combobox>
+                        <label>Message Type</label>
+                        <lightning-combobox name="messageTypeValue" value={messageTypeValue} placeholder="Select"
+                            options={messageTypeOptions} onchange={handleChange}></lightning-combobox>
                     </div>
                     <div class="dateContainer">
                         <label>Date Sent</label>
@@ -37,9 +37,9 @@
             </div>
         </template>
         <template if:true={notifications.length}>
-            <lightning-datatable key-field="Id" data={notifications} columns={columns} hide-checkbox-column="true"
+            <c-custom-data-table key-field="Id" data={notifications} columns={columns} hide-checkbox-column="true"
                 onrowaction={handleRowAction} class="custom-datatable">
-            </lightning-datatable>
+            </c-custom-data-table>
         </template>
     </lightning-card>
 
@@ -133,8 +133,8 @@
 
                     <footer class="slds-modal__footer"
                         style="background-color: #efebe4; border:1.5px solid #010032; border-top: none;">
-                        <lightning-button variant="destructive" class="customButton" label="Delete"
-                            onclick={deleteMessage}></lightning-button>
+                        <lightning-button variant="destructive" class="customButton" label="Archive"
+                            onclick={archiveMessage}></lightning-button>
                         <lightning-button variant="destructive" label="Close" onclick={closeModal}
                             class="slds-m-left_x-small customButton"></lightning-button>
                     </footer>
