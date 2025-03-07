@@ -1,0 +1,44 @@
+.slds-modal__header {
+    background-color: rgb(255 255 222);
+    border: 1.5px solid #010032;
+    border-bottom: none;
+    font-weight: bold;
+    padding: 5px;
+}
+
+.slds-modal__content {
+    background-color: rgb(255 255 222);
+    border-left: 1.5px solid #010032;
+    border-right: 1.5px solid #010032;
+}
+
+.slds-modal__footer {
+    text-align: center;
+    background-color: rgb(255 255 222);
+    border: 1.5px solid #010032;
+    border-top: none;
+}
+
+.slds-text-heading_medium {
+    background-color: #c8c4c0;
+    padding: 3px;
+    color: #010032;
+    border: 0.5px solid black;
+}
+
+:host .customButton {
+    --slds-c-button-radius-border: 0%;
+    --sds-c-button-destructive-color-background: #010032;
+    --sds-c-button-brand-color-background: #010032;
+    --sds-c-button-destructive-color-border: #010032;
+
+
+}
+
+:host .preferencesButton {
+    margin: 0px 5px;
+}
+
+.preferencesContainer {
+    margin-left: 20px
+}

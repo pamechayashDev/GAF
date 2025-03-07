@@ -1,21 +1,64 @@
 <template>
-    <lightning-card title="Messages" icon-name="utility:notification">
-     <template if:false={isParent}>
+  <lightning-card title="Messages" icon-name="utility:notification">
+    <template if:false={isParent}>
 
       <c-upp-notifications-table from='child'></c-upp-notifications-table>
-      <div slot="footer" class="slds-text-align_right" >
+      <div slot="footer" class="slds-text-align_right">
         <lightning-button variant="brand" label="Back" onclick={navigateToHome}></lightning-button>
-    </div>
+      </div>
     </template>
     <template if:true={isParent}>
       <c-upp-notifications-table from='parent'></c-upp-notifications-table>
-      <div slot="footer" class="slds-text-align_right" >
+      <div slot="footer" class="slds-text-align_right">
+        <lightning-button variant="brand" label="Preferences" class="preferencesButton"
+          onclick={handlePreferencesButtonClick}></lightning-button>
+
         <lightning-button variant="brand" label="View All" onclick={navigateToAllNotifications}></lightning-button>
-    </div>
+      </div>
     </template>
-        
 
-    </lightning-card>
 
-   
+  </lightning-card>
+
+  <template if:true={isModalOpen}>
+
+    <section role="dialog" class="slds-modal slds-fade-in-open">
+      <div class="slds-modal__container">
+        <div style="padding: 2px;">
+
+          <header class="slds-modal__header">
+
+            <h2 class="slds-text-heading_medium">
+              My Preferences
+            </h2>
+
+          </header>
+
+
+          <div class="slds-modal__content slds-p-around_medium">
+            <lightning-input type="checkbox" class="check" label="Deliver messages by email: " checked>
+            </lightning-input>
+            <div class="preferencesContainer">
+
+              <lightning-checkbox-group name="Checkbox Group" options={options} value={value}
+                onchange={handleChange}></lightning-checkbox-group>
+
+            </div>
+
+
+          </div>
+
+          <footer class="slds-modal__footer">
+            <lightning-button variant="brand" class="customButton" label="Save" onclick={handleSave}></lightning-button>
+
+            <lightning-button variant="destructive" label="Close" onclick={closeModal}
+              class="slds-m-left_x-small customButton"></lightning-button>
+          </footer>
+        </div>
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+
+
+  </template>
 </template>
