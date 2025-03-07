@@ -1,0 +1,8 @@
+<template>
+    <div class="slds-grid slds-align-items-center">
+        <template if:false= {typeAttributes.Is_Read__c}>
+        <lightning-icon icon-name='utility:email' size="small" class="slds-m-right_xx-small"></lightning-icon>
+    </template>
+        <span>{value}</span>
+    </div>
+</template>
