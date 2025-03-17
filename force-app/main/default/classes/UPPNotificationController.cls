@@ -40,30 +40,69 @@ public with sharing class UPPNotificationController {
         if (!conditions.isEmpty()) {
             baseQuery += ' AND ' + String.join(conditions, ' AND ');
         }
+      system.debug(Json.serializePretty(Database.query(baseQuery)));
         return Database.query(baseQuery);
     }
 
   @AuraEnabled
-   public static String getUppNotificationPreferences(){
+   public static Map<String,Object> getUppNotificationPreferences(){
 
-        List<UPP_Notifications_Preferences__c>  preferencesList = [Select Id, Preferences__c from UPP_Notifications_Preferences__c where User__c=:UserInfo.getUserId()];
-        return preferencesList[0].Preferences__c;
+        List<UPP_Notifications_Preferences__c>  preferencesList = [Select Id, Preferences__c , Deliver_Message_By_Email__c from UPP_Notifications_Preferences__c where User__c=:UserInfo.getUserId()];
+        Map<String,Object> preferencesResult =  new  Map<String,Object>();
+
+        if(!preferencesList.isEmpty()){
+        //    String deliverValue = preferencesList[0].Deliver_Message_By_Email__c ?'Deliver':'doNotDeliver';
+           preferencesResult.put('preferences',preferencesList[0].Preferences__c);
+           preferencesResult.put('deliverMessageByEmail',preferencesList[0].Deliver_Message_By_Email__c);
+        }
+        
+         system.debug(preferencesResult);
+        return preferencesResult;
        }
 
        @AuraEnabled
-      public static void saveOrUpdatePreferences(String preferences) {
+      public static void saveOrUpdatePreferences(String preferences,Boolean deliverMessageByEmail) {
         try {
-            List<UPP_Notifications_Preferences__c>  preferencesList =[Select Id, Preferences__c from UPP_Notifications_Preferences__c where User__c=:UserInfo.getUserId()];
+            List<UPP_Notifications_Preferences__c>  preferencesList =[Select Id, Preferences__c, Deliver_Message_By_Email__c from UPP_Notifications_Preferences__c where User__c=:UserInfo.getUserId()];
             if(preferencesList.isEmpty()){
-                UPP_Notifications_Preferences__c preference = new UPP_Notifications_Preferences__c(Preferences__c = preferences,User__c= UserInfo.getUserId());
+                UPP_Notifications_Preferences__c preference = new UPP_Notifications_Preferences__c(Preferences__c = preferences,User__c= UserInfo.getUserId(),Deliver_Message_By_Email__c=deliverMessageByEmail);
                 insert preference;
             }
             else {
                 preferencesList[0].Preferences__c = preferences;
+                preferencesList[0].Deliver_Message_By_Email__c=deliverMessageByEmail;
                 update preferencesList[0];
             }
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
     }
+
+
+    @AuraEnabled
+    public static List<Map<String,String>>  updateUppNotificationRecords(List<Map<String,String>> records){
+        List<UPP_Notification__c> recordsToUpdate = new List<UPP_Notification__c>();
+
+        for (Map<String,String> rec : records) {
+            UPP_Notification__c record = new UPP_Notification__c();
+            record.put('Id', rec.get('Id'));
+            record.put('RecordTypeId', rec.get('RecordTypeId'));
+            recordsToUpdate.add(record);
+        }
+
+        try {
+            update recordsToUpdate;
+        } catch (DmlException e) {
+            throw new AuraHandledException('Error updating records: ' + e.getMessage());
+        }
+     return records;
+
+    }
+
+
+
+
+
+
+
 }

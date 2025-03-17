@@ -1,8 +1,9 @@
 import { LightningElement, track, api, wire } from 'lwc';
 import getNotifications from '@salesforce/apex/UPPNotificationController.getUserNotifications';
+import updateUppNotificationRecords from '@salesforce/apex/UPPNotificationController.updateUppNotificationRecords';
 import getUppNotificationPreferences from '@salesforce/apex/UPPNotificationController.getUppNotificationPreferences';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { updateRecord, getRecord } from 'lightning/uiRecordApi';
+import { updateRecord,updateRecords, getRecord } from 'lightning/uiRecordApi';
 import { getObjectInfo, getPicklistValues } from 'lightning/uiObjectInfoApi';
 import logo from "@salesforce/resourceUrl/logo";
 import UPP_OBJECT from '@salesforce/schema/Upp_Notification__c';
@@ -12,7 +13,16 @@ export default class UppNotificationsTable extends LightningElement {
     @api from;
     isParent = false;
     dateFrom = null;
+    isPreferencesModalOpen=false;
     dateTo = null;
+    @track sortBy;
+    @track sortDirection = 'asc';
+    @track isBusinessAreaSortedAsc = false;
+    @track isBusinessAreaSortedDesc = false;
+    @track isMessageTypeSortedAsc = false;
+    @track isMessageTypeSortedDesc = false;
+    @track isSentSortedAsc = false;
+    @track isSentSortedDesc = false;
     preferencesString = '';
     showArchived = false;
     @track notifications = [];
@@ -40,22 +50,126 @@ export default class UppNotificationsTable extends LightningElement {
     @track selectedNotification = null;
 
 
+checkedIds = [];
 
-    columns = [
-        { label: 'Business Area', fieldName: 'Business_Area__c', type: 'text' },
-        { label: 'Message Type', fieldName: 'Message_Type__c', type: 'text' },
-        { label: 'Subject', fieldName: 'Subject__c', type: 'button', typeAttributes: { label: { fieldName: 'Subject__c' }, variant: 'base' } },
-        { label: 'Sent', fieldName: 'Sent__c', type: 'date' },
-        {
-            label: 'Message',
-            fieldName: 'Message__c',
-            type: 'customIconText',
-            typeAttributes: { Is_Read__c: { fieldName: 'Is_Read__c' } }
+    handleCheckboxChange(event){
+   let value=  event.target.checked;
+   let recId = event.target.dataset.id;
+   if(value){
+    this.checkedIds.push(recId);
+   }
+   else{
+    this.checkedIds = this.checkedIds.filter(item => item !== recId);
+   }
 
-        },
+   console.log(JSON.stringify(this.checkedIds));
+    }
+    archiveSelectedRecords(event){
+        let clickedFrom = event.target.dataset.from;
+          
+        let recordsToUpdate;
+        if(clickedFrom=='Multiple'){
+             recordsToUpdate = this.checkedIds.map(recordId => 
+
+                ( {
+                    'Id' : recordId,
+                    'RecordTypeId' : this.recordTypes[2].id
+                })
+            
+            );
+        }
+        else if(clickedFrom=='Modal'){
+            
+            recordsToUpdate  =  [ {
+                'Id' :   this.selectedNotification.Id,
+                'RecordTypeId' : this.recordTypes[2].id
+            }]; 
+         
+        }
+        else{
+            recordsToUpdate  =  [ {
+                'Id' :   event.target.dataset.id,
+                'RecordTypeId' : this.recordTypes[2].id
+            }];   
+        }
+    
+ 
+        updateUppNotificationRecords({records:recordsToUpdate}).then(res=>{
+        this.applyFilters();
+        this.closeModal();
+        this.showToast('Success','Archived Recoreds','Success');
+      }).catch(error => {
+            this.showToast('Error','Error Occured','Error');
+        });
+    }
+
+    handleSort(event) {
+        
+        const field = event.currentTarget.dataset.field;
+        this.sortBy = field;
+    console.log( this.sortBy)
+        // Toggle Sort Direction
+        this.sortDirection = this.sortDirection == 'asc' ? 'desc' : 'asc';
+
+        // Reset Sorting Icons
+        this.isBusinessAreaSortedAsc = false;
+        this.isBusinessAreaSortedDesc = false;
+        this.isMessageTypeSortedAsc = false;
+        this.isMessageTypeSortedDesc = false;
+        this.isSentSortedAsc = false;
+        this.isSentSortedDesc = false;
+        
+
+        // Set Sorting Icon for Current Column
+        if (field === 'Business_Area__c') {
+            this.isBusinessAreaSortedAsc = this.sortDirection === 'asc';
+            this.isBusinessAreaSortedDesc = this.sortDirection === 'desc';
+        } else if (field === 'Message_Type__c') {
+            this.isMessageTypeSortedAsc = this.sortDirection === 'asc';
+            this.isMessageTypeSortedDesc = this.sortDirection === 'desc';
+        } else if (field === 'Sent__c') {
+            this.isSentSortedAsc = this.sortDirection === 'asc';
+            this.isSentSortedDesc = this.sortDirection === 'desc';
+        }
+ 
+        // Perform Sorting
+        this.notifications = [...this.notifications].sort((a, b) => {
+            let valueA = a[field];
+            let valueB = b[field];
+
+            // Convert Date String to Comparable Value
+            if (field === 'Sent__c') {
+                valueA = new Date(a[field]);
+                valueB = new Date(b[field]);
+            }
+
+            let comparison = 0;
+            if (valueA > valueB) {
+                comparison = 1;
+            } else if (valueA < valueB) {
+                comparison = -1;
+            }
+
+           return this.sortDirection === 'asc' ? comparison : -comparison;
 
 
-    ];;
+        }
+    );
+    console.log('no-',JSON.stringify(this.notifications));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     recordTypes = [];
     master;
@@ -74,10 +188,12 @@ export default class UppNotificationsTable extends LightningElement {
             console.error('Error fetching record types', error);
         }
     }
-
     getPreferedMessageTypes() {
-        getUppNotificationPreferences().then((responseString) => {
+        getUppNotificationPreferences().then((preferencesResult) => {
+         let responseString  = preferencesResult.preferences;
+          
             this.preferencesString = responseString;
+
             if (responseString != null) {
                 this.messageTypeOptions = responseString.split(';').map(preferenceValue => {
                     return {
@@ -86,8 +202,11 @@ export default class UppNotificationsTable extends LightningElement {
                     }
                 });
             }
+
+           
             this.messageTypeOptions.push({label:'None',value:'None'});
             this.getNotificationData();
+           
         })
 
     }
@@ -121,15 +240,16 @@ export default class UppNotificationsTable extends LightningElement {
         ).then(data => {
             if (data) {
 
-                let notifications = this.from == 'parent' ? data.slice(0, 3) : data;
-                this.notifications = notifications.map(notification => ({
-                    ...notification,
-                    UserName: notification.User__r ? notification.User__r.Name : 'N/A',
-                }));
-                console.log(JSON.stringify(data));
+                 this.notifications = this.from == 'parent' ? data.slice(0, 3) : data;
+                
+                // this.notifications = this.notifications.map(notification => ({
+                //     ...notification,
+                // }));
+     
+                console.log('dttt--'+JSON.stringify(data));
             }
         }).catch(error => {
-            console.error('Error retrieving notifications', error);
+            console.error('Error retrieving notifications-1', error);
         })
     }
 
@@ -159,7 +279,8 @@ export default class UppNotificationsTable extends LightningElement {
 
     //applying filters
     applyFilters() {
-        console.log(this.messageTypeValue);
+        console.log('prefer='+this.preferencesString);
+
         getNotifications({
             dateFrom: this.dateFrom,
             dateTo: this.dateTo,
@@ -171,16 +292,16 @@ export default class UppNotificationsTable extends LightningElement {
 
         }).then(data => {
             if (data) {
-
-                let notifications = this.from == 'parent' ? data.slice(0, 3) : data;
-                this.notifications = notifications.map(notification => ({
-                    ...notification,
-                    UserName: notification.User__r ? notification.User__r.Name : 'N/A'
-                }));
+   
+                 this.notifications = this.from == 'parent' ? data.slice(0, 3) : data;
+           
+   
                 this.isParent = this.from == 'parent' ? true : false;
+   
+                 console.log('data--'+JSON.stringify(data));
             }
         }).catch(error => {
-            console.error('Error retrieving notifications', error);
+            console.error('Error retrieving notifications', JSON.stringify(error));
         })
     }
 
@@ -194,8 +315,8 @@ export default class UppNotificationsTable extends LightningElement {
         this.getNotificationData();
     }
 
-    handleRowAction(event) {
-        const notificationId = event.detail.row.Id;
+    handleSubjectAction(event) {
+        const notificationId = event.target.dataset.id;
         if (!notificationId) {
             console.error("Notification ID is missing");
             return;
@@ -221,39 +342,22 @@ export default class UppNotificationsTable extends LightningElement {
                     });
 
             }
+
             this.isModalOpen = true;
 
         }
     }
-    archiveMessage() {
-        console.log('archive');
-
-        if (this.selectedNotification.RecordTypeId != this.recordTypes[2].id) {
-            const fields = {
-                Id: this.selectedNotification.Id,
-                RecordTypeId: this.recordTypes[2].id
-            };
-            const recordInput = { fields };
-            updateRecord(recordInput).then((data) => {
-                this.showToast('Success', 'Message Archived', 'Success');
-                this.applyFilters();
-                this.closeModal();
-            })
-        }
-        else {
-            this.showToast('Already Archived', 'Already Archived', 'info');
-        }
-
-
-
-    }
-
 
     closeModal() {
         this.isModalOpen = false;
         this.selectedNotification = null;
     }
-
+    handlePreferencesButtonClick() {
+        this.isPreferencesModalOpen = true;
+    }
+closePreferencesModal(){
+    this.isPreferencesModalOpen = false;
+}
     showToast(title, message, variant) {
         const event = new ShowToastEvent({
             title,

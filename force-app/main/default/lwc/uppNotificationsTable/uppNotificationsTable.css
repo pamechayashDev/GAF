@@ -108,3 +108,19 @@
     --sds-c-button-destructive-color-border:#010032;
    
 }
+.sortBtn{
+    cursor: pointer;
+}
+td{
+    max-width: 200px;
+ 
+}
+tr{
+    max-height: 100px !important;
+}
+.darkBlueDot{
+    height: 9px;
+    width: 9px;
+    border-radius: 50%;
+    background-color: #1290d6;
+}
