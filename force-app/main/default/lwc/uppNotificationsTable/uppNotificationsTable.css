@@ -124,3 +124,14 @@ tr{
     border-radius: 50%;
     background-color: #1290d6;
 }
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.pagination span {
+    margin: 0 10px;
+    font-weight: bold;
+}

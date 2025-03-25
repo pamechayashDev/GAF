@@ -1,8 +1,8 @@
 <template>
   <lightning-card title="Messages" icon-name="utility:notification">
     <lightning-tabset active-tab-value={activeTab}>
-      <lightning-tab label="Home" value="home" title="2nd tab extended title">
-        <!-- <template if:true={isParent}> -->
+      <lightning-tab label="Home"  onclick={handleOnClick} value="home" title="2nd tab extended title">
+        <template if:true={isParent}>
         <div>
           <c-upp-notifications-table from='parent'></c-upp-notifications-table>
           <div slot="footer" class="slds-text-align_right">
@@ -11,24 +11,23 @@
             <lightning-button variant="brand" label="View All" onclick={navigateToAllNotifications}></lightning-button>
           </div>
         </div>
-        <!-- </template> -->
+        </template>
       </lightning-tab>
       <lightning-tab label="All Notifications" value="detail">
-        <template if:true={isDetail}>
           <div>
             <c-upp-notifications-table from='child'></c-upp-notifications-table>
             <div slot="footer" class="slds-text-align_right">
               <lightning-button variant="brand" label="Back" onclick={navigateToHome}></lightning-button>
             </div>
+
           </div>
-        </template>
       </lightning-tab>
     </lightning-tabset>
   </lightning-card>
 
   <template if:true={isModalOpen}>
 
-    <c-preferences-modal></c-preferences-modal>
+    <c-preferences-modal onsave = {callGetPreferedMessageTypesFromTable}  onclose={closeModal}></c-preferences-modal>
 
 
   </template>

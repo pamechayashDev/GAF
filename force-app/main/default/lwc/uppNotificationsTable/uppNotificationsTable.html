@@ -1,12 +1,12 @@
 <template>
 
     <lightning-card hide-header="true" label="">
-     <template if:false={isParent}>
+        <template if:false={isParent}>
             <div class="filter-container-cover">
                 <div class="filter-container">
                     <div class="filter-group">
                         <label>Display</label>
-                        <lightning-combobox name="displayValue"  value={displayValue} placeholder ={displayValue}
+                        <lightning-combobox name="displayValue" value={displayValue} placeholder={displayValue}
                             options={displayOptions} onchange={handleChange}></lightning-combobox>
                     </div>
                     <div class="filter-group">
@@ -33,132 +33,206 @@
                     <div class="clear-button" onclick={clearFilters}>Clear Filters</div>
                     <lightning-button label="Apply Filters" onclick={applyFilters} class="apply-button"
                         variant="destructive"></lightning-button>
-                        <lightning-button label="Archive" data-from='Multiple' onclick={archiveSelectedRecords} class="apply-button"
-                        variant="brand"></lightning-button>
-                        <lightning-button label="Preferences" onclick={handlePreferencesButtonClick} 
-                        variant="brand"></lightning-button>
+                    <lightning-button label="Archive" data-from='Multiple' onclick={archiveSelectedRecords}
+                        class="apply-button" variant="brand"></lightning-button>
+                    <lightning-button label="Preferences" onclick={handlePreferencesButtonClick} variant="brand">
+                    </lightning-button>
                 </div>
             </div>
         </template>
-      
+
         <template if:true={notifications.length}>
 
 
-            <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <table class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols">
                 <thead>
-                  <tr class="slds-line-height_reset">
-                    <template if:false={isParent}>
-                    <th class="slds-text-align_right" scope="col">
-                  
-                      </th>
-                      </template>
-                    <th class="" scope="col">
-                      <div class="slds-truncate" title="Business Area">
-                        <span class="sortBtn" data-field="Business_Area__c" onclick={handleSort}>Business Area</span>
-              
-                        <lightning-icon if:true={isBusinessAreaSortedAsc} icon-name="utility:arrowup" size="xx-small"></lightning-icon>
-                        <lightning-icon if:true={isBusinessAreaSortedDesc} icon-name="utility:arrowdown" size="xx-small"></lightning-icon>
+                    <tr class="slds-line-height_reset">
+                        <template if:false={isParent}>
+
+                            <th class="slds-text-align_center" data-column="Checkbox" scope="col"
+                                style="width: 3.2rem;">
+
+                                <lightning-input type="checkbox" label="" checked={allSelected}
+                                    onchange={handleSelectAll}>
+                                </lightning-input>
+                                <div class="slds-resizable">
+
+                                    <span class="slds-resizable__handle">
+                                        <span class="slds-resizable__divider" data-column="Checkbox"
+                                            onmousedown={handleStartResize}></span>
+                                    </span>
+                                </div>
+                            </th>
+                        </template>
+                        <th class="slds-is-resizable" data-column="BusinessArea" scope="col">
+                            <div class="slds-truncate slds-p-horizontal_xx-small slds-p-vertical_xx-small"
+                                title="Business Area">
+                                <span class="sortBtn" data-field="Business_Area__c" onclick={handleSort}>Business
+                                    Area</span>
+
+                                <lightning-icon if:true={isBusinessAreaSortedAsc} icon-name="utility:arrowup"
+                                    size="xx-small"></lightning-icon>
+                                <lightning-icon if:true={isBusinessAreaSortedDesc} icon-name="utility:arrowdown"
+                                    size="xx-small"></lightning-icon>
 
 
-                      </div>
-                    </th>
-                    <th class="" scope="col">
-                      <div class="slds-truncate" title="Message Type">
-                        <span class="sortBtn" data-field="Message_Type__c" onclick={handleSort}>Message Type</span>
-                
-                        <lightning-icon if:true={isMessageTypeSortedAsc} icon-name="utility:arrowup" size="xx-small"></lightning-icon>
-                        <lightning-icon if:true={isMessageTypeSortedDesc} icon-name="utility:arrowdown" size="xx-small"></lightning-icon>
-                      </div>
-                      
-                    </th>
-                    <th class="" scope="col">
-                      <div class="slds-truncate" title="
+                            </div>
+                            <div class="slds-resizable">
+
+                                <span class="slds-resizable__handle">
+                                    <span class="slds-resizable__divider" data-column="BusinessArea"
+                                        onmousedown={handleStartResize}></span>
+                                </span>
+                            </div>
+                        </th>
+                        <th class="slds-is-resizable" data-column="MessageType" scope="col">
+                            <div class="slds-truncate slds-p-horizontal_xx-small" title="Message Type">
+                                <span class="sortBtn" data-field="Message_Type__c" onclick={handleSort}>Message
+                                    Type</span>
+
+                                <lightning-icon if:true={isMessageTypeSortedAsc} icon-name="utility:arrowup"
+                                    size="xx-small"></lightning-icon>
+                                <lightning-icon if:true={isMessageTypeSortedDesc} icon-name="utility:arrowdown"
+                                    size="xx-small"></lightning-icon>
+                            </div>
+                            <div class="slds-resizable">
+
+                                <span class="slds-resizable__handle">
+                                    <span class="slds-resizable__divider" data-column="MessageType"
+                                        onmousedown={handleStartResize}></span>
+                                </span>
+                            </div>
+                        </th>
+                        <th class="slds-is-resizable" data-column="Subject" scope="col">
+                            <div class="slds-truncate slds-p-horizontal_xx-small" title="
                       Subject">
-                        Subject</div>
-                    </th>
-                    <th class="" scope="col">
-                      <div class="slds-truncate" title="	
-                      Sent">	
-                      <span class="sortBtn" data-field="Sent__c" onclick={handleSort}>Sent</span>
-                    <lightning-icon if:true={isSentSortedAsc} icon-name="utility:arrowup" size="xx-small"></lightning-icon>
-                    <lightning-icon if:true={isSentSortedDesc} icon-name="utility:arrowdown" size="xx-small"></lightning-icon>    
-                    
-                    </div>
-                    </th>
-                    <th class="" scope="col">
-                      <div class="slds-truncate" title="	
-                      Message">	
-                        Message</div>
-                    </th>
-                    
-                  </tr>
+                                Subject</div>
+                            <div class="slds-resizable">
+
+                                <span class="slds-resizable__handle">
+                                    <span class="slds-resizable__divider" data-column="Subject"
+                                        onmousedown={handleStartResize}></span>
+                                </span>
+                            </div>
+                        </th>
+                        <th class="slds-is-resizable" data-column="Sent" scope="col">
+                            <div class="slds-truncate slds-p-horizontal_xx-small" title="	
+                      Sent">
+                                <span class="sortBtn" data-field="Sent__c" onclick={handleSort}>Sent</span>
+                                <lightning-icon if:true={isSentSortedAsc} icon-name="utility:arrowup" size="xx-small">
+                                </lightning-icon>
+                                <lightning-icon if:true={isSentSortedDesc} icon-name="utility:arrowdown"
+                                    size="xx-small"></lightning-icon>
+
+                            </div>
+                            <div class="slds-resizable">
+
+                                <span class="slds-resizable__handle">
+                                    <span class="slds-resizable__divider" data-column="Sent"
+                                        onmousedown={handleStartResize}></span>
+                                </span>
+                            </div>
+                        </th>
+                        <th class="slds-is-resizable" data-column="Message" scope="col">
+                            <div class="slds-truncate slds-p-horizontal_xx-small" title="	
+                      Message">
+                                Message</div>
+                            <div class="slds-resizable">
+
+                                <span class="slds-resizable__handle">
+                                    <span class="slds-resizable__divider" data-column="Message"
+                                        onmousedown={handleStartResize}></span>
+                                </span>
+                            </div>
+                        </th>
+                        <th class="slds-is-resizable" data-column="RelatedLink" scope="col">
+                            <div class="slds-truncate slds-p-horizontal_xx-small" title="relateddoc">
+                                Related Link</div>
+                            <div class="slds-resizable">
+                                <span class="slds-resizable__handle">
+                                    <span class="slds-resizable__divider" data-column="RelatedLink"
+                                        onmousedown={handleStartResize}></span>
+                                </span>
+                            </div>
+                        </th>
+                        <th class="slds-is-resizable" scope="col" style="width:3.2rem">
+
+                        </th>
+                    </tr>
                 </thead>
                 <tbody>
-        <template for:each={notifications} for:item="item">
-                  <tr key={item.Id} class="slds-hint-parent">
-                    <template if:false={isParent}>
-                    <td class="slds-text-align_right" scope="col" style="width:3.25rem">
-                        <lightning-input
-                        type="checkbox"
-                        data-id={item.Id}
-                        label=""
-                        onchange={handleCheckboxChange}
-                    >
-                    </lightning-input>
-                    </td>
-                </template>
-                    <td data-label="Business Area">
-                      <div class="slds-truncate" >{item.Business_Area__c}</div>
-                    </td>
-                    <td data-label="Message Type">
-                      <div class="slds-truncate" >{item.Message_Type__c}</div>
-                    </td>
-                    <td data-label="Subject" scope="row">
-                        <div class="slds-truncate">
-                            <template if:false={item.Is_Read__c}>
-                             <div style="display: flex; gap:3.5px;align-items: center;"> 
-                             <div class="darkBlueDot"></div>
-                            <strong>
-                                <lightning-button variant="base" data-id={item.Id} onclick={handleSubjectAction} label={item.Subject__c}></lightning-button>
-                                <!-- <span data-id={item.Id} onclick={handleSubjectAction}  style="color: rgb(38 116 169); cursor: pointer;">{item.Subject__c}</span> -->
-                            </strong>
-                        </div>
-                        </template>
-                        <template if:true={item.Is_Read__c}>
-                         <lightning-button variant="base" data-id={item.Id} onclick={handleSubjectAction} label={item.Subject__c}></lightning-button>
-                        </template>
-                        </div>
-                      </td>
-                    <td data-label="Sent">
-                      <div class="slds-truncate" >{item.Sent__c}</div>
-                    </td>
-                    <td data-label="Message">
-                      <div class="slds-truncate"> 
-             
-
-
-                        <lightning-formatted-rich-text
-                        value={item.Message__c}
-                    ></lightning-formatted-rich-text>
-
-
-
-                    
-                 
-                </div>
-                    </td>
-                    <td>
-              
-                        <lightning-icon style="cursor: pointer;"  icon-name="utility:archive" data-id={item.Id} onclick={archiveSelectedRecords} size="xx-small"></lightning-icon>
-            
-                      </td>
-                  </tr>
-                </template>
+                    <template for:each={paginatedRecords} for:item="item">
+                        <tr key={item.Id} class="slds-hint-parent">
+                            <template if:false={isParent}>
+                                <td class="slds-text-align_right" scope="col" style="width:3.25rem">
+                                    <lightning-input type="checkbox" data-id={item.Id} label=""
+                                        onchange={handleCheckboxChange} checked={item.selected}>
+                                    </lightning-input>
+                                </td>
+                            </template>
+                            <td data-label="Business Area" data-column="BusinessArea">
+                                <div class="slds-truncate">{item.Business_Area__c}</div>
+                            </td>
+                            <td data-label="Message Type" data-column="MessageType">
+                                <div class="slds-truncate">{item.Message_Type__c}</div>
+                            </td>
+                            <td data-label="Subject" data-column="Subject" scope="row">
+                                <div class="slds-truncate">
+                                    <template if:false={item.Is_Read__c}>
+                                        <div style="display: flex; gap:3.5px;align-items: center;">
+                                            <div class="darkBlueDot"></div>
+                                            <strong>
+                                                <lightning-button variant="base" data-id={item.Id}
+                                                    onclick={handleSubjectAction}
+                                                    label={item.Subject__c}></lightning-button>
+                                                <!-- <span data-id={item.Id} onclick={handleSubjectAction}  style="color: rgb(38 116 169); cursor: pointer;">{item.Subject__c}</span> -->
+                                            </strong>
+                                        </div>
+                                    </template>
+                                    <template if:true={item.Is_Read__c}>
+                                        <lightning-button variant="base" data-id={item.Id} onclick={handleSubjectAction}
+                                            label={item.Subject__c}></lightning-button>
+                                    </template>
+                                </div>
+                            </td>
+                            <td data-label="Sent" data-column="Sent">
+                                <div class="slds-truncate">{item.formattedDate}</div>
+                            </td>
+                            <td data-label="Message" data-column="Message">
+                                <div class="slds-truncate">
+                                    <lightning-formatted-rich-text value={item.Message__c}>
+                                    </lightning-formatted-rich-text>
+                                </div>
+                            </td>
+                            <td class="slds-truncate" data-column="RelatedLink">
+                                <lightning-formatted-url value={item.Related_Link__c} tooltip="Related PDF"
+                                    target="_blank">
+                                </lightning-formatted-url>
+                            </td>
+                            <td>
+                                <lightning-icon style="cursor: pointer;" icon-name="utility:archive" data-id={item.Id}
+                                    onclick={archiveSelectedRecords} size="xx-small"></lightning-icon>
+                            </td>
+                        </tr>
+                    </template>
 
                 </tbody>
             </table>
-         
+
         </template>
+        <template if:false ={isParent} >
+        <!-- Pagination Controls -->
+        <div class="pagination">
+            <lightning-button label="Previous" onclick={previousPage} disabled={isFirstPage} variant="brand-outline">
+            </lightning-button>
+
+            <span>Page {currentPage} of {totalPages}</span>
+
+            <lightning-button label="Next" onclick={nextPage} disabled={isLastPage} variant="brand-outline">
+            </lightning-button>
+
+        </div>
+    </template>
     </lightning-card>
 
     <template if:false={notifications.length}>
@@ -239,11 +313,10 @@
                         <div class="messageContent">
 
                             <div class="textContent">
-                               
-                                <lightning-formatted-rich-text
-                                value={selectedNotification.Message__c}
-                            ></lightning-formatted-rich-text>
-                            
+
+                                <lightning-formatted-rich-text value={selectedNotification.Message__c}>
+                                </lightning-formatted-rich-text>
+
                             </div>
 
                             <img src={logoImageUrl} style="margin: 8px;" width="150px" alt="logo" />
@@ -269,6 +342,6 @@
     </template>
 
     <template if:true={isPreferencesModalOpen}>
-        <c-preferences-modal onclose={closePreferencesModal}></c-preferences-modal>
-       </template>
+        <c-preferences-modal onsave = {getPreferedMessageTypes} onclose={closePreferencesModal}></c-preferences-modal>
+    </template>
 </template>

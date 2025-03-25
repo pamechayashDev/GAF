@@ -4,30 +4,28 @@ import { NavigationMixin } from 'lightning/navigation';
 
 
 export default class UppNotifications extends NavigationMixin(LightningElement) {
+
     isModalOpen = false;
     activeTab= "home";
-    
     isParent = true;
-    isDetail = false;
 
-
-
-    connectedCallback(){
-        console.log('connected callback');
-       
+    callGetPreferedMessageTypesFromTable() {
+    const uppNotificationsTable = this.template.querySelector('c-upp-notifications-table');
+        if (uppNotificationsTable) {
+            uppNotificationsTable.getPreferedMessageTypes();
+        }
     }
 
     navigateToAllNotifications() {
-         this.isDetail = true;
-         this.isParent=false;
-         this.activeTab ="detail";
-         console.log(this.activeTab);
+         this.activeTab = "detail";
     }
     navigateToHome() {
-        this.isParent = true;
-        
-        this.activeTab = "home";
-        console.log(this.activeTab);
+        this.isParent = true;  
+         this.activeTab = "home";
+         this.callGetPreferedMessageTypesFromTable();
+    }
+    handleOnClick(){
+        console.log('handle');
     }
     handlePreferencesButtonClick() {
         this.isModalOpen = true;

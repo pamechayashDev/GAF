@@ -3,20 +3,21 @@ import getNotifications from '@salesforce/apex/UPPNotificationController.getUser
 import updateUppNotificationRecords from '@salesforce/apex/UPPNotificationController.updateUppNotificationRecords';
 import getUppNotificationPreferences from '@salesforce/apex/UPPNotificationController.getUppNotificationPreferences';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { updateRecord,updateRecords, getRecord } from 'lightning/uiRecordApi';
-import { getObjectInfo, getPicklistValues } from 'lightning/uiObjectInfoApi';
+import { updateRecord } from 'lightning/uiRecordApi';
+import { getObjectInfo} from 'lightning/uiObjectInfoApi';
 import logo from "@salesforce/resourceUrl/logo";
-import UPP_OBJECT from '@salesforce/schema/Upp_Notification__c';
+import UPP_OBJECT from '@salesforce/schema/UPP_Notification__c';
 
 
 export default class UppNotificationsTable extends LightningElement {
     @api from;
     isParent = false;
     dateFrom = null;
-    isPreferencesModalOpen=false;
+    isPreferencesModalOpen = false;
     dateTo = null;
     @track sortBy;
     @track sortDirection = 'asc';
+    @track currentPage = 1;
     @track isBusinessAreaSortedAsc = false;
     @track isBusinessAreaSortedDesc = false;
     @track isMessageTypeSortedAsc = false;
@@ -25,10 +26,43 @@ export default class UppNotificationsTable extends LightningElement {
     @track isSentSortedDesc = false;
     preferencesString = '';
     showArchived = false;
+    recordsPerPage = 10;
     @track notifications = [];
     displayValue = 'None';
     messageTypeValue = 'None';
     @track messageTypeOptions = [];
+    columnWidths = { RelatedLink: 150, Checkbox: 30, Message: 150, Sent: 150, Subject: 150, MessageType: 200, BusinessArea: 150 };
+    resizingColumn = null;
+    startX = 0;
+    startWidth = 0;
+
+    get totalPages() {
+        return Math.ceil(this.notifications.length / this.recordsPerPage);
+    }
+    get paginatedRecords() {
+        const start = (this.currentPage - 1) * this.recordsPerPage;
+        const end = start + this.recordsPerPage;
+        return this.notifications.slice(start, end);
+    }
+    nextPage() {
+        if (this.currentPage < this.totalPages) {
+            this.currentPage++;
+        }
+    }
+    get isFirstPage() {
+        return this.currentPage === 1;
+    }
+
+    get isLastPage() {
+        return this.currentPage === this.totalPages;
+    }
+
+    // Previous Page
+    previousPage() {
+        if (this.currentPage > 1) {
+            this.currentPage--;
+        }
+    }
     displayOptions = [
         {
             label: 'Unread Only',
@@ -50,64 +84,83 @@ export default class UppNotificationsTable extends LightningElement {
     @track selectedNotification = null;
 
 
-checkedIds = [];
+    checkedIds = [];
 
-    handleCheckboxChange(event){
-   let value=  event.target.checked;
-   let recId = event.target.dataset.id;
-   if(value){
-    this.checkedIds.push(recId);
-   }
-   else{
-    this.checkedIds = this.checkedIds.filter(item => item !== recId);
-   }
 
-   console.log(JSON.stringify(this.checkedIds));
+    allSelected = false;
+
+    // Select/Deselect All Rows
+    handleSelectAll(event) {
+        this.allSelected = event.target.checked;
+        this.notifications = this.notifications.map(row => {
+            this.checkedIds.push(row.Id);
+            return { ...row, selected: this.allSelected }
+        });
+        console.log('selectAll' + JSON.stringify(this.checkedIds));
     }
-    archiveSelectedRecords(event){
-        let clickedFrom = event.target.dataset.from;
-          
-        let recordsToUpdate;
-        if(clickedFrom=='Multiple'){
-             recordsToUpdate = this.checkedIds.map(recordId => 
 
-                ( {
-                    'Id' : recordId,
-                    'RecordTypeId' : this.recordTypes[2].id
-                })
-            
+
+
+    handleCheckboxChange(event) {
+        let value = event.target.checked;
+        let recId = event.target.dataset.id;
+
+        if (value) {
+            this.checkedIds.push(recId);
+        }
+        else {
+            this.checkedIds = this.checkedIds.filter(item => item !== recId);
+            console.log(JSON.stringify(this.checkedIds));
+        }
+
+    }
+    archiveSelectedRecords(event) {
+        let clickedFrom = event.target.dataset.from;
+
+        let recordsToUpdate;
+        if (clickedFrom == 'Multiple') {
+            recordsToUpdate = this.checkedIds.map(recordId =>
+
+            ({
+                'Id': recordId,
+                'RecordTypeId': this.recordTypes[2].id
+            })
+
             );
         }
-        else if(clickedFrom=='Modal'){
-            
-            recordsToUpdate  =  [ {
-                'Id' :   this.selectedNotification.Id,
-                'RecordTypeId' : this.recordTypes[2].id
-            }]; 
-         
+        else if (clickedFrom == 'Modal') {
+
+            recordsToUpdate = [{
+                'Id': this.selectedNotification.Id,
+                'RecordTypeId': this.recordTypes[2].id
+            }];
+
         }
-        else{
-            recordsToUpdate  =  [ {
-                'Id' :   event.target.dataset.id,
-                'RecordTypeId' : this.recordTypes[2].id
-            }];   
+        else {
+            recordsToUpdate = [{
+                'Id': event.target.dataset.id,
+                'RecordTypeId': this.recordTypes[2].id
+            }];
         }
-    
- 
-        updateUppNotificationRecords({records:recordsToUpdate}).then(res=>{
-        this.applyFilters();
-        this.closeModal();
-        this.showToast('Success','Archived Recoreds','Success');
-      }).catch(error => {
-            this.showToast('Error','Error Occured','Error');
+
+
+        updateUppNotificationRecords({ records: recordsToUpdate }).then(res => {
+            this.applyFilters();
+            this.closeModal();
+            this.showToast('Success', 'Archived Recoreds', 'Success');
+        }).catch(error => {
+            this.showToast('Error', 'Error Occured', 'Error');
         });
+
+
+        this.allSelected = false;
     }
 
     handleSort(event) {
-        
+
         const field = event.currentTarget.dataset.field;
         this.sortBy = field;
-    console.log( this.sortBy)
+        console.log(this.sortBy)
         // Toggle Sort Direction
         this.sortDirection = this.sortDirection == 'asc' ? 'desc' : 'asc';
 
@@ -118,7 +171,7 @@ checkedIds = [];
         this.isMessageTypeSortedDesc = false;
         this.isSentSortedAsc = false;
         this.isSentSortedDesc = false;
-        
+
 
         // Set Sorting Icon for Current Column
         if (field === 'Business_Area__c') {
@@ -131,7 +184,7 @@ checkedIds = [];
             this.isSentSortedAsc = this.sortDirection === 'asc';
             this.isSentSortedDesc = this.sortDirection === 'desc';
         }
- 
+
         // Perform Sorting
         this.notifications = [...this.notifications].sort((a, b) => {
             let valueA = a[field];
@@ -150,21 +203,45 @@ checkedIds = [];
                 comparison = -1;
             }
 
-           return this.sortDirection === 'asc' ? comparison : -comparison;
+            return this.sortDirection === 'asc' ? comparison : -comparison;
 
 
         }
-    );
-    console.log('no-',JSON.stringify(this.notifications));
+        );
     }
 
 
 
+    handleStartResize(event) {
+        this.resizingColumn = event.target.dataset.column;
+        this.startWidth = this.columnWidths[this.resizingColumn];
+        this.startX = event.clientX;
+        this.boundHandleResizing = this.handleResizing.bind(this);
+        this.boundStopResizing = this.stopResizing.bind(this);
+        document.addEventListener('mousemove', this.boundHandleResizing);
+        document.addEventListener('mouseup', this.boundStopResizing);
+    }
+
+    handleResizing(event) {
+        if (!this.resizingColumn) {
+            return;
+        }
+        const diffX = event.clientX - this.startX;
+
+        const newWidth = this.startWidth + diffX;
+        this.columnWidths[this.resizingColumn] = newWidth;
+        this.template.querySelectorAll(`td[data-column="${this.resizingColumn}"], th[data-column="${this.resizingColumn}"]`).forEach(el => {
+            el.style.width = newWidth + 'px';
+        });
+    }
 
 
 
-
-
+    stopResizing = () => {
+        this.resizingColumn = null;
+        document.removeEventListener('mousemove', this.boundHandleResizing);
+        document.removeEventListener('mouseup', this.boundStopResizing);
+    };
 
 
 
@@ -188,10 +265,13 @@ checkedIds = [];
             console.error('Error fetching record types', error);
         }
     }
-    getPreferedMessageTypes() {
+
+   @api 
+   getPreferedMessageTypes() {
+      console.log('getPreferedMessageTypes');
         getUppNotificationPreferences().then((preferencesResult) => {
-         let responseString  = preferencesResult.preferences;
-          
+            let responseString = preferencesResult[0].Preferences__c;
+            this.recordsPerPage = preferencesResult[0].Records_per_page__c;
             this.preferencesString = responseString;
 
             if (responseString != null) {
@@ -203,10 +283,10 @@ checkedIds = [];
                 });
             }
 
-           
-            this.messageTypeOptions.push({label:'None',value:'None'});
+
+            this.messageTypeOptions.push({ label: 'None', value: 'None' });
             this.getNotificationData();
-           
+
         })
 
     }
@@ -231,7 +311,6 @@ checkedIds = [];
                 dateFrom: this.dateFrom,
                 dateTo: this.dateTo,
                 showArchived: this.showArchived,
-                calledFrom: this.from,
                 messageStatus: this.displayValue,
                 messageType: this.messageTypeValue,
                 preferencesString: this.preferencesString
@@ -239,14 +318,12 @@ checkedIds = [];
             }
         ).then(data => {
             if (data) {
-
-                 this.notifications = this.from == 'parent' ? data.slice(0, 3) : data;
-                
-                // this.notifications = this.notifications.map(notification => ({
-                //     ...notification,
-                // }));
-     
-                console.log('dttt--'+JSON.stringify(data));
+                this.notifications = this.from == 'parent' ? data.slice(0, 3) : data;
+                this.notifications = this.notifications.map(notification => ({
+                    ...notification,
+                    formattedDate: this.formatDate(notification.Sent__c)
+                }))
+                console.log('Data for test='+JSON.stringify(this.notifications));
             }
         }).catch(error => {
             console.error('Error retrieving notifications-1', error);
@@ -279,30 +356,35 @@ checkedIds = [];
 
     //applying filters
     applyFilters() {
-        console.log('prefer='+this.preferencesString);
+        console.log('prefer=' + this.preferencesString);
 
         getNotifications({
             dateFrom: this.dateFrom,
             dateTo: this.dateTo,
             showArchived: this.showArchived,
-            calledFrom: 'child',
             messageStatus: this.displayValue,
             messageType: this.messageTypeValue,
             preferencesString: this.preferencesString
 
         }).then(data => {
             if (data) {
-   
-                 this.notifications = this.from == 'parent' ? data.slice(0, 3) : data;
-           
-   
+
+                this.notifications = this.from == 'parent' ? data.slice(0, 3) : data;
+
+
                 this.isParent = this.from == 'parent' ? true : false;
-   
-                 console.log('data--'+JSON.stringify(data));
+
+                this.notifications = this.notifications.map(notification => ({
+                    ...notification,
+                    formattedDate: this.formatDate(notification.Sent__c)
+                }))
+
+                console.log('data--' + JSON.stringify(data));
             }
         }).catch(error => {
             console.error('Error retrieving notifications', JSON.stringify(error));
         })
+        this.allSelected = false;
     }
 
     //clear all filters
@@ -355,9 +437,9 @@ checkedIds = [];
     handlePreferencesButtonClick() {
         this.isPreferencesModalOpen = true;
     }
-closePreferencesModal(){
-    this.isPreferencesModalOpen = false;
-}
+    closePreferencesModal() {
+        this.isPreferencesModalOpen = false;
+    }
     showToast(title, message, variant) {
         const event = new ShowToastEvent({
             title,

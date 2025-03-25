@@ -34,8 +34,9 @@
 
 
 }
-
-
+.recordCountInput{
+   width: 150px;
+}
 
 .preferencesContainer {
     margin-left: 20px
