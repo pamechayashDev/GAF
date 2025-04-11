@@ -1,0 +1,38 @@
+<template>
+    <div class="notification-container">
+      <!-- Notification Bell Icon with Dot -->
+      <div class="bell-wrapper" onclick={toggleDropdown}>
+        <lightning-icon icon-name="utility:notification" alternative-text="Notifications" size="medium"></lightning-icon>
+        <template if:true={showNotificationDot}>
+          <div class="notification-dot"></div>
+        </template>
+      </div>
+  
+      <!-- Notification Dropdown -->
+      <template if:true={showDropdown}>
+        <section class="dropdown">
+          <header class="dropdown-header">
+            <span>Notifications</span>
+           
+          </header>
+          <template if:true={hasNotifications}>
+            <div class="notification-list">
+              <template for:each={notifications} for:item="notif">
+                <div class="notification-item" key={notif.Id}>
+                  <lightning-icon icon-name="utility:info" size="small" class="notif-icon"></lightning-icon>
+                  <div class="notification-content">
+                    <strong>{notif.Subject__c}</strong>
+                    <p>{notif.Message__c}</p>
+                   
+                  </div>
+                </div>
+              </template>
+            </div>
+          </template>
+          <template if:false={hasNotifications}>
+            <p class="no-notifications">No new notifications</p>
+          </template>
+        </section>
+      </template>
+    </div>
+  </template>

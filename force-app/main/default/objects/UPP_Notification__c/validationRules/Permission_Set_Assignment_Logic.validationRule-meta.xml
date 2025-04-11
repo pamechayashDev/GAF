@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Permission_Set_Assignment_Logic</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(ISBLANK(TEXT(Evaluate_As__c)), NOT(ISBLANK(Permission_Sets__c)))</errorConditionFormula>
+    <errorDisplayField>Evaluate_As__c</errorDisplayField>
+    <errorMessage>Required when Permission Set entries are present</errorMessage>
+</ValidationRule>

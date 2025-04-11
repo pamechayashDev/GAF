@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- How the Permission Set entries are evaluated, does the context User need to be assigned to ALL listed entries or to ANY entry. --></help>
+    <label><!-- Evaluate As --></label>
+    <name>Evaluate_As__c</name>
+    <picklistValues>
+        <masterLabel>ALL</masterLabel>
+        <translation><!-- ALL --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>All Permission Sets</masterLabel>
+        <translation><!-- All Permission Sets --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Any Permission Set</masterLabel>
+        <translation><!-- Any Permission Set --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

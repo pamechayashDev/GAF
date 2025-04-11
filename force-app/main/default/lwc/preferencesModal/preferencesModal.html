@@ -13,13 +13,14 @@
   
   
             <div class="slds-modal__content slds-p-around_medium">
-              <lightning-input type="checkbox" onchange={handleDeliverCheckboxChange} class="check" label="Deliver messages by email: " checked={deliverMessageByEmail}>
-              </lightning-input>
+              <h2 class="slds-text-title">
+                Deliver by Email
+              </h2>
               <div class="preferencesContainer">
   
                 <lightning-checkbox-group name="Checkbox Group" options={options} value={value}
                   onchange={handleChange}></lightning-checkbox-group>
-                  <lightning-input type="number" class="recordCountInput"  name="recordsPerPage" label="Records Per Page" value={numberOfRecords} onchange={handleRecordsPerPageChange}></lightning-input>
+               
               </div>
   
   

@@ -1,9 +1,8 @@
 public class UPP_Notification_Helper {
     
     public static void afterUppNotificationInsert(List<Upp_Notification__c> newNotifications) {
-      
-        // Collect the user IDs from the notifications.
-        // (Assumes that each notification record contains a User__c field.)
+        
+        
         Set<Id> userIds = new Set<Id>();
         for (Upp_Notification__c notif : newNotifications) {
             if (notif.User__c != null) {
@@ -18,11 +17,11 @@ public class UPP_Notification_Helper {
         
         // Query the preferences for all these users at once.
         Map<Id, UPP_Notifications_Preferences__c> prefsByUser = new Map<Id, UPP_Notifications_Preferences__c>();
-        for (UPP_Notifications_Preferences__c pref : [
-            SELECT Id, Preferences__c, Deliver_Message_By_Email__c, User__c
-            FROM UPP_Notifications_Preferences__c
-            WHERE User__c IN :userIds
-        ]) {
+        
+        UPPNotificationPreferenceSelector preferencesSelector =  new UPPNotificationPreferenceSelector();
+        List<UPP_Notifications_Preferences__c> preferences   = preferencesSelector.selectPreferencesByUser(new List<Id>(userIds));
+        
+        for (UPP_Notifications_Preferences__c pref : preferences) {
             prefsByUser.put(pref.User__c, pref);
         }
         
@@ -31,7 +30,10 @@ public class UPP_Notification_Helper {
         for (Upp_Notification__c notif : newNotifications) {
             // Get the user’s preferences (if any)
             UPP_Notifications_Preferences__c pref = prefsByUser.get(notif.User__c);
-            if (pref != null && pref.Deliver_Message_By_Email__c) {
+            
+            List<String> prefs = pref.Preferences__c!=null?pref.Preferences__c.split(';'):null;
+            if (pref != null && prefs!=null && prefs.contains(notif.Message_Type__c)) {
+                
                 Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
                 // For demonstration, a hard-coded email address is used.
                 // In production, you would typically retrieve the email from the User record.
@@ -45,92 +47,78 @@ public class UPP_Notification_Helper {
         // If there are any emails to send, send them in one bulk call.
         if (!emailMessages.isEmpty()) {
             try {
-               // Messaging.sendEmail(emailMessages);
+                Messaging.sendEmail(emailMessages);
             } catch (Exception e) {
                 throw new AuraHandledException(e.getMessage());
             }
-        }     
+        }
         
-       List<Upp_Notification__c> notificationsToUpdate = new List<Upp_Notification__c>();
-       //building message text
-        List<Upp_Notification__c> notifications = [Select UPP_NotificationTemplate__r.Agreement_Text__c , Merge_Data__c from UPP_Notification__c where Id in :newNotifications];
-
-
-        for (Upp_Notification__c notification : notifications) {       
+        List<Upp_Notification__c> notificationsToUpdate = new List<Upp_Notification__c>();
+        //building message text
+        List<Id> notificationIds = new List<Id>();
+        for (UPP_Notification__c notif : newNotifications) {
+            notificationIds.add(notif.Id);
+        }
+        UPPNotificationSelector notificationSelector = new  UPPNotificationSelector();
+        List<Upp_Notification__c> notifications = notificationSelector.selectNotificationsById(notificationIds);
+        
+        for (Upp_Notification__c notification : notifications) {
+            
             if (String.isNotBlank(notification.UPP_NotificationTemplate__r.Agreement_Text__c) && String.isNotBlank(notification.Merge_Data__c)) {
                 String formattedMessage = mergeFields(notification.UPP_NotificationTemplate__r.Agreement_Text__c, notification.Merge_Data__c);
                 notification.Message__c = formattedMessage;
                 notificationsToUpdate.add(notification);
             }
         }
-
+        
         // Perform the update only if there are records to modify
         if (!notificationsToUpdate.isEmpty()) {
             update notificationsToUpdate;
         }
         
-        
-        sendNotifications(notifications);
-    }
-   
-    private static Void sendNotifications(List<Upp_Notification__c> newNotifications){
-
-
-        for(Upp_Notification__c notification:newNotifications){
-            CustomNotificationType cnType = [SELECT Id FROM CustomNotificationType WHERE DeveloperName = 'NewMessage'];
-			Id userId = Userinfo.getUserId();
-			Messaging.CustomNotification customNotificationObj = new Messaging.CustomNotification();
-			customNotificationObj.setBody('Please check UPP Notification details');
-			customNotificationObj.setTitle('New UPP Notification !!');
-			customNotificationObj.setNotificationTypeId(cnType.id);
-			customNotificationObj.setSenderId(userId);
-			customNotificationObj.setTargetId(notification.Id);
-			customNotificationObj.send(new Set<String> {userId});
-        }
-        
     }
     
     
     
-     private static String mergeFields(String agreementText, String jsonData) {
-
-        if (String.isEmpty(agreementText) || String.isEmpty(jsonData)) {
-            
-            return agreementText; // Return original if missing data
-        }
-
+    
+    
+    private static String mergeFields(String agreementText, String jsonData) {
+        
         try {
             Map<String, Object> mergeData = (Map<String, Object>) JSON.deserializeUntyped(jsonData);
-
+            
             for (String key : mergeData.keySet()) {
-
-                  String placeholder='placeholder';
-
+                
+                String placeholder='placeholder';
+                
                 if(key == 'PONumber'){
-                       placeholder= '[PONUMBER}';
-                   }
+                    placeholder= '[PONUMBER}';
+                }
                 else if(key == 'OrderNumber'){
-                placeholder= '[ORDERID]';
+                    placeholder= '[ORDERID]';
                 }
                 else{
-                       placeholder= '['+key.toUpperCase()+']';
+                    
+                    placeholder= '['+key.toUpperCase()+']';
+                    system.debug('placeholder'+placeholder);
                 }
                 
-               // Convert key to uppercase to match format
+                // Convert key to uppercase to match format
                 if (mergeData.get(key) != null) {
                     agreementText = agreementText.replace(placeholder, String.valueOf(mergeData.get(key)));
+                    
                 }
             }
         } catch (Exception e) {
             System.debug('Error processing merge data: ' + e.getMessage());
         }
-
+        system.debug('agreementText'+agreementText);
         return agreementText;
     }
     
     
- 
-
-
+    
+    
+    
     
 }

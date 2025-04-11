@@ -1,0 +1,108 @@
+/* .bell-container {
+    position: relative;
+    display: flex;
+    justify-content: end;
+
+}
+
+.notification-dot {
+    background-color: red;
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    border: 2px solid white;
+} */
+.notification-container {
+    position: relative;
+    display: flex;
+    justify-content: end;
+  }
+  
+  .bell-wrapper {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+  }
+  
+  .notification-dot {
+    background-color: red;
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  
+  .dropdown {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    width: 350px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+    z-index: 10000;
+  }
+  
+  .dropdown-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    background-color: #f4f6f9;
+  }
+  
+  .dropdown-header a {
+    color: #0070d2;
+    cursor: pointer;
+  }
+  
+  .notification-list {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  
+  .notification-item {
+    display: flex;
+    padding: 12px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .notif-icon {
+    margin-right: 12px;
+  }
+  
+  .notification-content {
+    flex: 1;
+  }
+  
+  .notification-content strong {
+    color: #16325c;
+  }
+  
+  .notification-content p {
+    color: #54698d;
+  }
+  
+  .notification-content small {
+    color: #a1a1a1;
+  }
+  
+  .read-indicator {
+    width: 10px;
+    height: 10px;
+    background-color: #0070d2;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 5px;
+  }
+  
+  .no-notifications {
+    text-align: center;
+    padding: 20px;
+    color: #a1a1a1;
+  }

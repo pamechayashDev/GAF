@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Force_Refresh__c</fullName>
+    <defaultValue>false</defaultValue>
+    <inlineHelpText>Checking this box will refresh the ENTIRE Notification with merge data from the associated template.</inlineHelpText>
+    <label>Force Refresh</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

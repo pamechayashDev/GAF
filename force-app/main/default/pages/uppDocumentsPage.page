@@ -1,0 +1,56 @@
+<apex:page controller="UPPDocumentController" renderAs="pdf" showHeader="false" applyHtmlTag="false" applyBodyTag="false">
+<html>
+    <head>
+        <style>
+            @page {
+            size: A4 landscape;
+            }
+        </style>
+    </head>
+    <h1 style="text-align:center; font-family: Arial, sans-serif; margin-bottom: 20px;">UPP Invoice List</h1>
+
+    <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 10pt;">
+        <thead>
+            <tr style="background-color: #f2f2f2; color: #333; font-size: 12px;">
+                <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Invoice Date</th>
+                <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Due Date</th>
+                <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Location</th>
+                <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Ship to City</th>
+                <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Entry Type</th>
+                <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">PO</th>
+                <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Amount Due</th>
+                <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Currency</th>
+                <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Upp Statement</th>
+                <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Original Amount</th>
+                <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Business Type</th>
+                <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Payment Status</th>
+                <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Ship to State</th>
+                <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Sold to City</th>
+                <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Sold to State</th>
+            </tr>
+        </thead>
+        <tbody>
+            <apex:repeat value="{!uppDocs}" var="upps">
+                <tr style="font-size: 12px;">
+                    <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.Invoice_Date__c}</td>
+                    <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.Due_Date__c}</td>
+                    <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.Location__c}</td>
+                    <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.Ship_to_City__c}</td>
+                    <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.Entry_Type__c}</td>
+                    <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.PO__c}</td>
+                    <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.Amount_Due__c}</td>
+                    <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.Currency__c}</td>
+                    <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.Upp_Statement__c}</td>
+                    <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.Original_Amount__c}</td>
+                    <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.Business_Type__c}</td>
+                    <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.Payment_Status__c}</td>
+                    <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.Ship_to_State__c}</td>
+                    <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.Sold_to_City__c}</td>
+                    <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.Sold_to_State__c}</td>
+                </tr>
+            </apex:repeat>
+        </tbody>
+    </table>
+</html>
+       
+</apex:page>

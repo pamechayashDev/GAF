@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>UPP_NotificationTemplate__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>UPP NotificationTemplate</label>
+    <referenceTo>UPP_NotificationTemplate__c</referenceTo>
+    <relationshipLabel>UPP Notifications</relationshipLabel>
+    <relationshipName>UPP_Notifications</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

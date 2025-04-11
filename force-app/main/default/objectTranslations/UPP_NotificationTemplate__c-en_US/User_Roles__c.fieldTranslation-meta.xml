@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- User Roles --></label>
+    <name>User_Roles__c</name>
+    <picklistValues>
+        <masterLabel>Add, manage, and remove users, permissions, and services</masterLabel>
+        <translation><!-- Add, manage, and remove users, permissions, and services --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>All users</masterLabel>
+        <translation><!-- All users --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

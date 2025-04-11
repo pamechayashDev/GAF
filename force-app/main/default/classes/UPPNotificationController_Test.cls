@@ -24,11 +24,15 @@ public class UPPNotificationController_Test {
         ContactId = con.Id
             );
         insert portalUser;
-        
+        System.runAs(portalUser) {
+            PermissionSet permSet = [SELECT Id FROM PermissionSet WHERE Name = 'CommunityUserPermissions'];
+            PermissionSetAssignment permissions = new PermissionSetAssignment(AssigneeId = portalUser.Id, PermissionSetId = permSet.Id);
+            insert permissions;
+        }
         // Create UPP Notifications
         List<UPP_Notification__c> notifications = new List<UPP_Notification__c>();
         for (Integer i = 0; i < 5; i++) {
-            notifications.add(new UPP_Notification__c(Business_Area__c = 'Mixed',Is_Read__c = true,Message_Type__c = 'Missed Pickup Appointment',Subject__c = 'Subject ' + i,  Sent__c = Date.today().addDays(-i), User__c = portalUser.Id,Theme__c='Success',RecordTypeId = [Select Id from RecordType where Name = 'Active' Limit 1].Id));
+            notifications.add(new UPP_Notification__c(Business_Area__c = 'Mixed',Is_Read__c = true,Message_Type__c = 'Missed Pickup Appointment',Subject__c = 'Subject ' + i,  Sent__c = Date.today().addDays(-i), User__c = portalUser.Id, Theme__c='Success',RecordTypeId = [Select Id from RecordType where Name = 'Active' Limit 1].Id));
         }
         insert notifications;
         
@@ -60,15 +64,19 @@ public class UPPNotificationController_Test {
             UPP_Program_Permission_Id__c ='1100000003'
                 )
         };
+        
+        
     }
     
     @isTest
     static void testGetUserNotifications() {
         Test.startTest();
         User runningTestPortalUser = [Select Id from User Where username='johndoe@example.com.community'];
+        
         System.runAs(runningTestPortalUser){
+            
             List<UPP_Notification__c> result = UPPNotificationController.getUserNotifications(
-                Date.today().addDays(-1), Date.today().addDays(1), false, 'Read', 'Missed Pickup Appointment', 'Missed Pickup Appointment'
+                Date.today().addDays(-1), Date.today().addDays(1), false, 'Read', 'Missed Pickup Appointment'
                 );
             
             System.assertNotEquals(0, result.size());
@@ -83,8 +91,9 @@ public class UPPNotificationController_Test {
         Test.startTest();
         
         User runningTestPortalUser = [Select Id from User Where username='johndoe@example.com.community'];
-        
+        System.debug('runningTestPortalUser'+runningTestPortalUser);
         System.runAs(runningTestPortalUser){
+            
             List<UPP_Notifications_Preferences__c> preferences = UPPNotificationController.getUppNotificationPreferences();
             System.assertEquals(1, preferences.size());
             System.assertEquals(true, preferences[0].Deliver_Message_By_Email__c);
@@ -98,11 +107,6 @@ public class UPPNotificationController_Test {
     static void testUpdatePreferences() {
         Test.startTest();
         User runningTestPortalUser = [Select Id from User Where username='johndoe@example.com.community'];
-        system.debug('runningTestPortalUser'+runningTestPortalUser);
-        
-        
-        
-        
         System.runAs(runningTestPortalUser){
             Map<String, Object> preferences = new Map<String, Object>{
                 'messageTypes' => 'Missed Pickup Appointment',
@@ -179,7 +183,6 @@ public class UPPNotificationController_Test {
         
         Test.startTest();
         try {
-            // Call the method to trigger the exception
             UPPNotificationController.saveOrUpdatePreferences(invalidPreferences);
             System.assert(false, 'Exception should have been thrown');
         } catch (AuraHandledException e) {

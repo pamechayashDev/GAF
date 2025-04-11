@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Certification_Designation__c</fullName>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Certification Visibility</label>
+    <required>true</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Mixed</fullName>
+                <default>true</default>
+                <label>Mixed</label>
+            </value>
+            <value>
+                <fullName>Certified</fullName>
+                <default>false</default>
+                <label>Certified</label>
+            </value>
+            <value>
+                <fullName>Non-Certified</fullName>
+                <default>false</default>
+                <label>Non-Certified</label>
+            </value>
+            <value>
+                <fullName>ALL</fullName>
+                <default>false</default>
+                <label>ALL</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

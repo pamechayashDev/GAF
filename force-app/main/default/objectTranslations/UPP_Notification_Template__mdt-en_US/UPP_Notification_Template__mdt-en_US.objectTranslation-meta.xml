@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>UPP Notification Template</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>UPP Notification Templates</value>
+    </caseValues>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- Required when Permission Set entries are present --></errorMessage>
+        <name>Permission_Set_Assignment_Logic</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Required --></errorMessage>
+        <name>Template_Required</name>
+    </validationRules>
+</CustomObjectTranslation>

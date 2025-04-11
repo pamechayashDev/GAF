@@ -1,4 +1,4 @@
-import { LightningElement, wire,track } from 'lwc';
+import { LightningElement, wire,track,api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 
 
@@ -6,27 +6,28 @@ import { NavigationMixin } from 'lightning/navigation';
 export default class UppNotifications extends NavigationMixin(LightningElement) {
 
     isModalOpen = false;
-    activeTab= "home";
-    isParent = true;
 
-    callGetPreferedMessageTypesFromTable() {
-    const uppNotificationsTable = this.template.querySelector('c-upp-notifications-table');
-        if (uppNotificationsTable) {
-            uppNotificationsTable.getPreferedMessageTypes();
-        }
-    }
+  @api isParent ;
+
+
 
     navigateToAllNotifications() {
-         this.activeTab = "detail";
+        this[NavigationMixin.Navigate]({
+            type: 'standard__webPage',
+            attributes: {
+                url: `/all-notifications`
+            }
+        });
     }
     navigateToHome() {
-        this.isParent = true;  
-         this.activeTab = "home";
-         this.callGetPreferedMessageTypesFromTable();
+        this[NavigationMixin.Navigate]({
+            type: 'standard__webPage',
+            attributes: {
+                url: `/`
+            }
+        });
     }
-    handleOnClick(){
-        console.log('handle');
-    }
+
     handlePreferencesButtonClick() {
         this.isModalOpen = true;
         

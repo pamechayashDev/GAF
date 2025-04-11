@@ -1,0 +1,61 @@
+<!--
+  @description       : 
+  @author            : 
+  @group             : 
+  @last modified on  : 03-27-2025
+  @last modified by  : 
+-->
+<template>
+  <div
+    class="statementContainer slds-p-around_small slds-box"
+    style="overflow-x: hidden"
+  >
+    <h2 class="slds-m-bottom_small slds-text-heading_medium">Statements</h2>
+
+    <div
+      class="filtersContainer slds-grid slds-m-vertical_small"
+      style="flex-wrap: wrap"
+    >
+      <lightning-combobox
+        name="location"
+        label="Select Location Name"
+        value={locationValue}
+        options={locationOptions}
+        placeholder="Select Location"
+        class="slds-p-right_small"
+        style="min-width: 300px"
+        onchange={handleFilterChange}
+      >
+      </lightning-combobox>
+
+      <lightning-combobox
+        name="statementDate"
+        label="Select Statement Date"
+        value={dateValue}
+        placeholder="Select Statement Date"
+        options={statementDateOptions}
+        style="min-width: 300px"
+        class="slds-p-right_small"
+        onchange={handleFilterChange}
+      >
+      </lightning-combobox>
+    </div>
+    <h2 class="slds-m-vertical_small slds-text-heading_medium">
+      Current Open Items
+    </h2>
+    <div n class="slds-m-vertical_small">
+      <lightning-button
+        label="View Current Open Items"
+        onclick={handleApplyFilters}
+        variant="destructive"
+      ></lightning-button>
+    </div>
+    <lightning-datatable
+      key-field="Id"
+      data={documents}
+      columns={columns}
+      class="slds-max-medium-table_stacked-horizontal"
+    >
+    </lightning-datatable>
+  </div>
+</template>

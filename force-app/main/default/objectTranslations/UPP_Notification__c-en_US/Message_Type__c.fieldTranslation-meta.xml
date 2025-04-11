@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Message Type --></label>
+    <name>Message_Type__c</name>
+    <picklistValues>
+        <masterLabel>Missed Pickup Appointment</masterLabel>
+        <translation><!-- Missed Pickup Appointment --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>New Statement</masterLabel>
+        <translation><!-- New Statement --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Past Due Shipment</masterLabel>
+        <translation><!-- Past Due Shipment --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Sales Incentive Credit Message</masterLabel>
+        <translation><!-- Sales Incentive Credit Message --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Scheduled Ship Date Change</masterLabel>
+        <translation><!-- Scheduled Ship Date Change --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

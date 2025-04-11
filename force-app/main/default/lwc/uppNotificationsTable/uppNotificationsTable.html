@@ -1,6 +1,6 @@
 <template>
 
-    <lightning-card hide-header="true" label="">
+    <lightning-card hide-header="true" label="" style="position: relative;">
         <template if:false={isParent}>
             <div class="filter-container-cover">
                 <div class="filter-container">
@@ -11,8 +11,9 @@
                     </div>
                     <div class="filter-group">
                         <label>Message Type</label>
-                        <lightning-combobox name="messageTypeValue" value={messageTypeValue} placeholder="Select"
-                            options={messageTypeOptions} onchange={handleChange}></lightning-combobox>
+                       
+                        <lightning-combobox name="messageTypeValue" value={messageTypeValue} placeholder=""
+                            options={messageTypePicklistValue} onchange={handleChange}></lightning-combobox>
                     </div>
                     <div class="dateContainer">
                         <label>Date Sent</label>
@@ -31,12 +32,17 @@
                 </div>
                 <div class="button-group">
                     <div class="clear-button" onclick={clearFilters}>Clear Filters</div>
+
                     <lightning-button label="Apply Filters" onclick={applyFilters} class="apply-button"
                         variant="destructive"></lightning-button>
+
                     <lightning-button label="Archive" data-from='Multiple' onclick={archiveSelectedRecords}
                         class="apply-button" variant="brand"></lightning-button>
+
                     <lightning-button label="Preferences" onclick={handlePreferencesButtonClick} variant="brand">
                     </lightning-button>
+
+                    <lightning-input type="number" class="recordCountInput"  name="recordsPerPage" label="Records Per Page" onblur={handleRecordsPerPageOnBlur} value={recordsPerPage} onchange={handleChange}></lightning-input>
                 </div>
             </div>
         </template>
@@ -342,6 +348,6 @@
     </template>
 
     <template if:true={isPreferencesModalOpen}>
-        <c-preferences-modal onsave = {getPreferedMessageTypes} onclose={closePreferencesModal}></c-preferences-modal>
+        <c-preferences-modal onclose={closePreferencesModal}></c-preferences-modal>
     </template>
 </template>
