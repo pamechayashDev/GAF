@@ -40,248 +40,13 @@
       >
       </lightning-combobox>
 
-      <template if:true={linkAvailable}>
-        <a href={downloadDocumentLink} target="_blank" style="margin-top: 15px"
-          ><lightning-button
-            label="Download"
-            disabled={selectedStatement}
-            variant="destructive"
-          ></lightning-button
-        ></a>
-      </template>
-      <template if:false={linkAvailable}>
-        <lightning-button
-          label="Download"
-          disabled={selectedStatement}
-          variant="destructive"
-        ></lightning-button>
-      </template>
+      <lightning-button
+        label="Download"
+        onclick={handleDownloadDoc}
+        disabled={isDownloadDisabled}
+        variant="destructive"
+      ></lightning-button>
     </div>
-
-    <!-- <lightning-accordion
-      class="example-accordion"
-      allow-multiple-sections-open="true"
-    >
-      <lightning-accordion-section name="A" label="Statement Detail Filters">
-        <div class="statementFiltersContainer">
-          <div class="filtersContainerRow">
-            <lightning-combobox
-              name="BusinessType"
-              label="Business Type"
-              value={documentFilters.BusinessType}
-              placeholder="Input"
-              options={optionsObject.Business_Type__cOptions}
-              style="width: 210px"
-              onchange={handleDocumentFilterChange}
-            ></lightning-combobox>
-
-            <div class="dateSpace">
-              <div class="custom-label">Invoice Date</div>
-              <div class="dateContainer">
-                <lightning-input
-                  style="width: 100px"
-                  type="date"
-                  value={documentFilters.InvoiceDateFrom}
-                  name="InvoiceDateFrom"
-                  label=""
-                  onchange={handleDocumentFilterChange}
-                  placeholder="From"
-                ></lightning-input>
-
-                <lightning-input
-                  style="width: 100px"
-                  type="date"
-                  name="InvoiceDateTo"
-                  value={documentFilters.InvoiceDateTo}
-                  label=""
-                  onchange={handleDocumentFilterChange}
-                  placeholder="To"
-                ></lightning-input>
-              </div>
-            </div>
-            <div class="dateSpace">
-              <div class="custom-label">Order Date</div>
-              <div class="dateContainer">
-                <lightning-input
-                  style="width: 100px"
-                  type="date"
-                  value={documentFilters.OrderDateFrom}
-                  onchange={handleDocumentFilterChange}
-                  name="OrderDateFrom"
-                  label=""
-                  placeholder="From"
-                ></lightning-input>
-                <lightning-input
-                  style="width: 100px"
-                  type="date"
-                  value={documentFilters.OrderDateTo}
-                  onchange={handleDocumentFilterChange}
-                  name="OrderDateTo"
-                  label=""
-                  placeholder="To"
-                ></lightning-input>
-              </div>
-            </div>
-            <div class="dateSpace">
-              <div class="custom-label">Due Date</div>
-              <div class="dateContainer">
-                <lightning-input
-                  style="width: 100px"
-                  type="date"
-                  name="DueDateFrom"
-                  value={documentFilters.DueDateFrom}
-                  onchange={handleDocumentFilterChange}
-                  label=""
-                  placeholder="From"
-                ></lightning-input>
-                <lightning-input
-                  style="width: 100px"
-                  type="date"
-                  value={documentFilters.DueDateTo}
-                  onchange={handleDocumentFilterChange}
-                  name="DueDateTo"
-                  label=""
-                  placeholder="To"
-                ></lightning-input>
-              </div>
-            </div>
-            <div class="dateSpace">
-              <div class="custom-label">Ship Date</div>
-              <div class="dateContainer">
-                <lightning-input
-                  type="date"
-                  style="width: 100px"
-                  name="ShipDateFrom"
-                  value={documentFilters.ShipDateFrom}
-                  onchange={handleDocumentFilterChange}
-                  label=""
-                  placeholder="From"
-                ></lightning-input>
-                <lightning-input
-                  type="date"
-                  style="width: 100px"
-                  name="ShipDateTo"
-                  value={documentFilters.ShipDateTo}
-                  onchange={handleDocumentFilterChange}
-                  label=""
-                  placeholder="To"
-                ></lightning-input>
-              </div>
-            </div>
-          </div>
-          <div class="filtersContainerRow">
-            <lightning-combobox
-              name="PaymentStatus"
-              label="Payment Status"
-              value={documentFilters.PaymentStatus}
-              placeholder="Input"
-              options={optionsObject.Payment_Status__cOptions}
-              style="width: 210px"
-              onchange={handleDocumentFilterChange}
-            ></lightning-combobox>
-
-            <lightning-combobox
-              name="ShipToState"
-              label="Ship To State"
-              value={documentFilters.ShipToState}
-              placeholder="Input"
-              options={optionsObject.Ship_to_State__cOptions}
-              style="width: 210px"
-              onchange={handleDocumentFilterChange}
-            ></lightning-combobox>
-
-            <lightning-combobox
-              name="ShipToCity"
-              label="Ship To City"
-              value={documentFilters.ShipToCity}
-              placeholder="Input"
-              options={optionsObject.Ship_to_City__cOptions}
-              style="width: 210px"
-              onchange={handleDocumentFilterChange}
-            ></lightning-combobox>
-
-            <lightning-combobox
-              name="SoldToState"
-              label="Sold To State"
-              value={documentFilters.SoldToState}
-              placeholder="Input"
-              options={optionsObject.Sold_to_State__cOptions}
-              style="width: 210px"
-              onchange={handleDocumentFilterChange}
-            ></lightning-combobox>
-
-            <lightning-combobox
-              name="SoldToCity"
-              label="Sold To City"
-              value={documentFilters.SoldToCity}
-              placeholder="Input"
-              options={optionsObject.Sold_to_City__cOptions}
-              style="width: 210px"
-              onchange={handleDocumentFilterChange}
-            ></lightning-combobox>
-          </div>
-
-          <div class="filtersContainerRow">
-            <div class="dateSpace">
-              <div class="custom-label">Amount</div>
-              <div class="dateContainer">
-                <lightning-input
-                  style="width: 100px"
-                  type="text"
-                  name="FirstAmount"
-                  label=""
-                  value={documentFilters.FirstAmount}
-                  onchange={handleDocumentFilterChange}
-                  placeholder="First or Single"
-                ></lightning-input>
-
-                <lightning-input
-                  style="width: 100px"
-                  type="text"
-                  name="EndingAmount"
-                  label="Ending"
-                  value={documentFilters.EndingAmount}
-                  onchange={handleDocumentFilterChange}
-                  placeholder="Ending"
-                ></lightning-input>
-              </div>
-            </div>
-
-            <lightning-input
-              style="width: 210px"
-              type="text"
-              name="ShipmentId"
-              value={documentFilters.ShipmentId}
-              label="Shipment ID"
-              onchange={handleDocumentFilterChange}
-              placeholder="Input"
-            ></lightning-input>
-
-            <lightning-input
-              style="padding-top: 30px"
-              type="checkbox"
-              value={documentFilters.EntryType}
-              label="Show Credit Invoice Only"
-              onchange={handleDocumentFilterChange}
-              name="EntryType"
-            ></lightning-input>
-          </div>
-          <div style="display: flex; gap: 20px">
-            <div class="slds-m-vertical_small">
-              <lightning-button
-                label="Apply Filters"
-                disabled={selectedStatement}
-                onclick={handleDocumentApplyFilters}
-                variant="destructive"
-              ></lightning-button>
-            </div>
-            <div class="clear-button" onclick={handleClearDocumentFilters}>
-              Clear Filters
-            </div>
-          </div>
-        </div>
-      </lightning-accordion-section>
-    </lightning-accordion> -->
 
     <h2 class="slds-m-vertical_small slds-text-heading_medium">
       Current Open Items
@@ -314,7 +79,14 @@
         onclick={downloadPDF}
         variant="destructive"
       ></lightning-button>
+      <lightning-button
+        label="Export PNG"
+        disabled={selectedStatement}
+        onclick={handleDownloadPNG}
+        variant="destructive"
+      ></lightning-button>
     </div>
+
     <lightning-datatable
       key-field="Id"
       data={documents}

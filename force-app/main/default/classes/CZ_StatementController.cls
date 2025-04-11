@@ -1,6 +1,6 @@
 public with sharing class CZ_StatementController {
     @AuraEnabled
-    public static Map<String,Object> fetchStatementWithDocuments(Map<String,Object> statementFilter , Map<String,Object> documentFilter ){
+    public static Map<String,Object> fetchStatementWithDocuments(Map<String,Object> statementFilter ){
         
         Map<String,Object> statementResult = new Map<String,Object>();
         
@@ -16,7 +16,7 @@ public with sharing class CZ_StatementController {
             
             
             uppStatements = statementSelector.selectStatementsByLocationAndDate(location,statementDate);
-            
+            system.debug('uppStatements++'+uppStatements);
             if(uppStatements.size()!=0){
                 
                 
@@ -31,17 +31,10 @@ public with sharing class CZ_StatementController {
         }
         else {
             system.debug('non filter');
-            if(statementFilter.containsKey('Id')){
-                
-                Id statementId= (Id)statementFilter.get('Id');
-                system.debug('documentFilter'+documentFilter);
-                List<UPP_Document__c> relatedDocuments = documentSelector.selectDocumentsByFields(documentFilter,statementId);
-                system.debug('relatedDocuments'+relatedDocuments);
-                statementResult.put('relatedDocuments',relatedDocuments);
-            }
+            
             uppStatements = statementSelector.selectStatementsByLocationAndDate(null,null);
             statementResult.put('uppStatements',uppStatements);
-            system.debug('statementResult '+Json.serializePretty(statementResult));
+            
         }
         
         return statementResult;

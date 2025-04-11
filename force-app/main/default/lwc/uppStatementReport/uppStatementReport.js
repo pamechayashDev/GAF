@@ -1,6 +1,6 @@
 import { LightningElement, track } from "lwc";
 import fetchStatementWithDocuments from "@salesforce/apex/CZ_StatementController.fetchStatementWithDocuments";
-import jsPDF from "@salesforce/resourceUrl/jsPDF";
+
 import html2canvas from "@salesforce/resourceUrl/html2canvas";
 import { loadScript } from "lightning/platformResourceLoader";
 
@@ -32,15 +32,13 @@ export default class UppStatementReport extends LightningElement {
   statementDateOptions = {};
   locationOptions = {};
   businessTypeOptions = {};
+  isDownloadDisabled = true;
   jsPdfInitialized = false;
-  linkAvailable = true;
+
   connectedCallback() {
-    Promise.all([loadScript(this, jsPDF), loadScript(this, html2canvas)]).then(
-      () => {
-        console.log("jsPdfInitialized");
-        this.jsPdfInitialized = true;
-      }
-    );
+    Promise.all([loadScript(this, html2canvas)]).then(() => {
+      console.log("html2canvasInitialized");
+    });
 
     fetchStatementWithDocuments({
       statementFilter: this.filters,
@@ -153,18 +151,18 @@ export default class UppStatementReport extends LightningElement {
     window.open(vfUrl, "_blank");
   }
 
-  downloadDocumentLink = "";
+  downloadDocumentLink = null;
   handleFilterChange(event) {
     this.filters[event.target.name] = event.target.value;
   }
   selectedStatementId = "";
   selectedStatement = true;
+
   handleApplyFilters() {
     console.log("filters: ", JSON.stringify(this.filters));
 
     fetchStatementWithDocuments({
-      statementFilter: this.filters,
-      documentFilter: this.documentFilters
+      statementFilter: this.filters
     })
       .then((result) => {
         console.log(result.relatedDocuments);
@@ -172,47 +170,26 @@ export default class UppStatementReport extends LightningElement {
           "result.uppStatements :" + JSON.stringify(result.uppStatements)
         );
 
-        if ("relatedDocuments" in result) {
-          this.documents = result.relatedDocuments;
-        }
+        this.documents =
+          "relatedDocuments" in result ? result.relatedDocuments : [];
+        if (
+          result.uppStatements != undefined &&
+          result.uppStatements.length != 0
+        ) {
+          this.selectedStatementId = result.uppStatements[0].Id;
+          if (result.uppStatements[0].Document_Link__c != null) {
+            this.downloadDocumentLink =
+              result.uppStatements[0].Document_Link__c;
+            this.isDownloadDisabled = false;
+          } else {
+            this.isDownloadDisabled = true;
+          }
 
-        //populating options
-        let comboboxFieds = [
-          "Business_Type__c",
-          "Payment_Status__c",
-          "Ship_to_State__c",
-          "Ship_to_City__c",
-          "Sold_to_City__c",
-          "Sold_to_State__c"
-        ];
-
-        const valuesSet = new Set();
-        for (let Field of comboboxFieds) {
-          this.optionsObject[Field + "Options"] = this.documents
-            .filter((result) => {
-              if (!valuesSet.has(result[Field])) {
-                valuesSet.add(result[Field]);
-                return true;
-              }
-              return false;
-            })
-            .map((result) => ({
-              label: result[Field],
-              value: result[Field]
-            }));
-          valuesSet.clear();
-        }
-        console.log(JSON.stringify(this.optionsObject));
-        this.selectedStatementId = result.uppStatements[0].Id;
-
-        if (result.uppStatements[0].Document_Link__c != null) {
-          this.downloadDocumentLink = result.uppStatements[0].Document_Link__c;
-        } else {
-          this.linkAvailable = false;
-        }
-
-        if (this.selectedStatementId != "") {
           this.selectedStatement = false;
+        } else {
+          this.selectedStatement = true;
+          this.downloadDocumentLink = null;
+          this.isDownloadDisabled = true;
         }
 
         console.log("Pass");
@@ -223,52 +200,100 @@ export default class UppStatementReport extends LightningElement {
         console.log("Fail", error);
         this.documents = [];
       });
-  }
-
-  handleDocumentApplyFilters() {
-    let statementfilters = {};
-    statementfilters["Id"] = this.selectedStatementId;
-    console.log("documentFilters" + JSON.stringify(this.documentFilters));
-    console.log("statementfilters" + JSON.stringify(statementfilters));
-
-    fetchStatementWithDocuments({
-      statementFilter: statementfilters,
-      documentFilter: this.documentFilters
-    })
-      .then((result) => {
-        console.log(
-          "relatedDocuments" + JSON.stringify(result.relatedDocuments)
-        );
-
-        if ("relatedDocuments" in result) {
-          this.documents = result.relatedDocuments;
-        }
-
-        console.log("Pass");
-        this.error = undefined;
-      })
-      .catch((error) => {
-        this.error = error;
-        console.log("Fail", error);
-        this.documents = [];
-      });
-  }
-
-  handleDocumentFilterChange(event) {
-    const { name, value, checked, type } = event.target;
-    if (type === "checkbox") {
-      this.documentFilters[name] = checked ? "Credit" : "";
-    } else {
-      this.documentFilters[name] = value;
-    }
   }
 
   handleClearFilters() {
     this.filters = {};
     this.handleApplyFilters();
   }
-  handleClearDocumentFilters() {
-    this.documentFilters = {};
-    this.handleDocumentApplyFilters();
+  handleDownloadPNG() {
+    if (!this.documents || this.documents.length === 0) return;
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const fieldsToRender = [
+      "Amount_Due__c",
+      "Business_Type__c",
+      "Currency__c",
+      "Due_Date__c",
+      "Entry_Type__c",
+
+      "Invoice_Date__c",
+      "Location__c",
+      "Original_Amount__c",
+      "PO__c",
+      "Payment_Status__c",
+      "Product2__c",
+      "Ship_to_City__c",
+      "Ship_to_State__c",
+      "Sold_to_City__c",
+      "Sold_to_State__c",
+      "UPP_Statement__c"
+    ];
+
+    // Set individual column widths
+    const colWidths = fieldsToRender.map((field) =>
+      field === "UPP_Statement__c" ? 250 : 140
+    );
+
+    const rowHeight = 34;
+    const headerHeight = 40;
+    const padding = 10;
+
+    const width = colWidths.reduce((total, w) => total + w, 0) + padding * 2;
+    const height = (this.documents.length + 1) * rowHeight + padding * 2;
+
+    canvas.width = width;
+    canvas.height = height;
+
+    // Background
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, width, height);
+
+    ctx.strokeStyle = "#000000";
+    ctx.lineWidth = 1;
+
+    // Draw header row
+    ctx.font = "bold 16px Arial";
+    ctx.fillStyle = "#000000";
+
+    let x = padding;
+    let y = padding;
+
+    fieldsToRender.forEach((field, index) => {
+      const header = field.replace(/__c$/, "").replace(/_/g, " ");
+      const colWidth = colWidths[index];
+      ctx.strokeRect(x, y, colWidth, rowHeight);
+      ctx.fillText(header, x + 5, y + 22);
+      x += colWidth;
+    });
+
+    // Draw data rows
+    ctx.font = "14px Arial";
+    y += rowHeight;
+
+    this.documents.forEach((doc) => {
+      x = padding;
+      fieldsToRender.forEach((field, index) => {
+        const colWidth = colWidths[index];
+        const value = doc[field] ?? "—";
+        ctx.strokeRect(x, y, colWidth, rowHeight);
+        ctx.fillText(String(value), x + 5, y + 22);
+        x += colWidth;
+      });
+      y += rowHeight;
+    });
+
+    // Download PNG
+    const link = document.createElement("a");
+    link.download = "UPP_Documents_All_Records.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  }
+  handleDownloadDoc() {
+    if (this.downloadDocumentLink != null) {
+      window.open(this.downloadDocumentLink);
+    }
   }
 }

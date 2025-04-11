@@ -10,7 +10,8 @@ public inherited sharing class CZ_UppStatementSelector extends fflib_SObjectSele
         return new List<Schema.SObjectField>{
             Upp_Statement__c.Location__c,
             Upp_Statement__c.Statement_date__c,
-            Upp_Statement__c.User__c
+            Upp_Statement__c.User__c,
+            Upp_Statement__c.Document_Link__c
         };
     }
     
