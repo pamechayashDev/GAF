@@ -1,0 +1,35 @@
+<!--
+  @description       : 
+  @author            : 
+  @group             : 
+  @last modified on  : 03-27-2025
+  @last modified by  : 
+-->
+<template>
+  <div
+    class="slds-p-around_small slds-box"
+    style="overflow-x: hidden; background: #ffffff"
+  >
+    <div style="display: flex; justify-content: space-between">
+      <h2 class="slds-m-bottom_small slds-text-heading_medium">
+        Order Acknowledgements
+      </h2>
+      <lightning-button
+        style="margin-bottom: 15px"
+        label="Download Selected"
+        onclick={downloadCSV}
+        variant="destructive"
+        >Download Selected</lightning-button
+      >
+    </div>
+    <lightning-datatable
+      key-field="Id"
+      data={OrderAcknowledgements}
+      columns={columns}
+      onrowaction={handleRowAction}
+      onrowselection={handleRowSelection}
+      class="slds-max-medium-table_stacked-horizontal"
+    >
+    </lightning-datatable>
+  </div>
+</template>

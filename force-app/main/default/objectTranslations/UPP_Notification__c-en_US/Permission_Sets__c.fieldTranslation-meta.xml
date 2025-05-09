@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Permission Set(s) --></label>
+    <name>Permission_Sets__c</name>
+    <picklistValues>
+        <masterLabel>UPP_Add_manage_and_remove_users_permissions_and_services</masterLabel>
+        <translation><!-- UPP_Add_manage_and_remove_users_permissions_and_services --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>UPP_CMS_Home_Access</masterLabel>
+        <translation><!-- UPP_CMS_Home_Access --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>UPP_Edit_Company_Info_and_Profile</masterLabel>
+        <translation><!-- UPP_Edit_Company_Info_and_Profile --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>UPP_Manage_External_Users</masterLabel>
+        <translation><!-- UPP_Manage_External_Users --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>UPP_Manage_users_permissions_and_program_enrollment</masterLabel>
+        <translation><!-- UPP_Manage_users_permissions_and_program_enrollment --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>UPP_View_Rewards_Widget</masterLabel>
+        <translation><!-- UPP_View_Rewards_Widget --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>UPP_View_Warranty_Guarantee_Widget</masterLabel>
+        <translation><!-- UPP_View_Warranty_Guarantee_Widget --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

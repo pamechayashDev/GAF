@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type__c</fullName>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Type</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>License Renewal</fullName>
+                <default>true</default>
+                <label>License Renewal</label>
+            </value>
+            <value>
+                <fullName>T&amp;C Signed</fullName>
+                <default>false</default>
+                <label>T&amp;C Signed</label>
+            </value>
+            <value>
+                <fullName>Insurance Provided</fullName>
+                <default>false</default>
+                <label>Insurance Provided</label>
+            </value>
+            <value>
+                <fullName>License Provided</fullName>
+                <default>false</default>
+                <label>License Provided</label>
+            </value>
+            <value>
+                <fullName>Certification Approved</fullName>
+                <default>false</default>
+                <label>Certification Approved</label>
+            </value>
+            <value>
+                <fullName>Installation Experience Provided</fullName>
+                <default>false</default>
+                <label>Installation Experience Provided</label>
+            </value>
+            <value>
+                <fullName>Account Master Data Lock</fullName>
+                <default>false</default>
+                <label>Account Master Data Lock</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,31 @@
+.statementFiltersContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.filtersContainerRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.dateContainer {
+  display: flex;
+  gap: 10px;
+}
+.dateSpace {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  margin-top: 4px;
+}
+.custom-label {
+  position: absolute;
+  top: 0;
+
+  color: #696969e8;
+}
+
+.clear-button {
+  color: red;
+  cursor: pointer;
+}

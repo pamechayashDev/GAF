@@ -1,0 +1,529 @@
+<template>
+  <lightning-card hide-header="true" label="" style="position: relative">
+    <template if:false={isParent}>
+      <div class="filter-container-cover">
+        <div class="filter-container">
+          <div class="filter-group">
+            <label>Display</label>
+            <lightning-combobox
+              name="displayValue"
+              value={displayValue}
+              placeholder={displayValue}
+              options={displayOptions}
+              onchange={handleChange}
+            ></lightning-combobox>
+          </div>
+          <div class="filter-group">
+            <label>Message Type</label>
+
+            <lightning-combobox
+              name="messageTypeValue"
+              value={messageTypeValue}
+              placeholder=""
+              options={messageTypePicklistValue}
+              onchange={handleChange}
+            ></lightning-combobox>
+          </div>
+          <div class="dateContainer">
+            <label>Date Sent</label>
+            <div class="dates">
+              <lightning-input
+                type="date"
+                placeholder="From"
+                name="dateFrom"
+                value={dateFrom}
+                onchange={handleChange}
+              ></lightning-input>
+              <lightning-input
+                type="date"
+                name="dateTo"
+                placeholder="To"
+                value={dateTo}
+                onchange={handleChange}
+              ></lightning-input>
+            </div>
+          </div>
+          <div class="filter-group">
+            <lightning-input
+              style="margin-top: 20px"
+              type="checkbox"
+              name="showArchived"
+              label="Show Archived"
+              checked={showArchived}
+              onchange={handleChange}
+            ></lightning-input>
+          </div>
+        </div>
+        <div class="button-group">
+          <div class="clear-button" onclick={clearFilters}>Clear Filters</div>
+
+          <lightning-button
+            label="Apply Filters"
+            onclick={applyFilters}
+            class="apply-button"
+            variant="destructive"
+          ></lightning-button>
+
+          <lightning-button
+            label="Archive"
+            data-from="Multiple"
+            onclick={archiveSelectedRecords}
+            class="apply-button"
+            variant="brand"
+          ></lightning-button>
+
+          <lightning-button
+            label="Preferences"
+            onclick={handlePreferencesButtonClick}
+            variant="brand"
+          >
+          </lightning-button>
+
+          <lightning-input
+            type="number"
+            class="recordCountInput"
+            name="recordsPerPage"
+            label="Records Per Page"
+            onblur={handleRecordsPerPageOnBlur}
+            value={recordsPerPage}
+            onchange={handleChange}
+          ></lightning-input>
+        </div>
+      </div>
+    </template>
+
+    <template if:true={notifications.length}>
+      <table
+        class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols"
+      >
+        <thead>
+          <tr class="slds-line-height_reset">
+            <template if:false={isParent}>
+              <th
+                class="slds-text-align_center"
+                data-column="Checkbox"
+                scope="col"
+                style="width: 3.2rem"
+              >
+                <lightning-input
+                  type="checkbox"
+                  label=""
+                  checked={allSelected}
+                  onchange={handleSelectAll}
+                >
+                </lightning-input>
+                <div class="slds-resizable">
+                  <span class="slds-resizable__handle">
+                    <span
+                      class="slds-resizable__divider"
+                      data-column="Checkbox"
+                      onmousedown={handleStartResize}
+                    ></span>
+                  </span>
+                </div>
+              </th>
+            </template>
+            <th
+              class="slds-is-resizable"
+              data-column="BusinessArea"
+              scope="col"
+            >
+              <div
+                class="slds-truncate slds-p-horizontal_xx-small slds-p-vertical_xx-small"
+                title="Business Area"
+              >
+                <span
+                  class="sortBtn"
+                  data-field="Business_Area__c"
+                  onclick={handleSort}
+                  >Business Area</span
+                >
+
+                <lightning-icon
+                  if:true={isBusinessAreaSortedAsc}
+                  icon-name="utility:arrowup"
+                  size="xx-small"
+                ></lightning-icon>
+                <lightning-icon
+                  if:true={isBusinessAreaSortedDesc}
+                  icon-name="utility:arrowdown"
+                  size="xx-small"
+                ></lightning-icon>
+              </div>
+              <div class="slds-resizable">
+                <span class="slds-resizable__handle">
+                  <span
+                    class="slds-resizable__divider"
+                    data-column="BusinessArea"
+                    onmousedown={handleStartResize}
+                  ></span>
+                </span>
+              </div>
+            </th>
+            <th class="slds-is-resizable" data-column="MessageType" scope="col">
+              <div
+                class="slds-truncate slds-p-horizontal_xx-small"
+                title="Message Type"
+              >
+                <span
+                  class="sortBtn"
+                  data-field="Message_Type__c"
+                  onclick={handleSort}
+                  >Message Type</span
+                >
+
+                <lightning-icon
+                  if:true={isMessageTypeSortedAsc}
+                  icon-name="utility:arrowup"
+                  size="xx-small"
+                ></lightning-icon>
+                <lightning-icon
+                  if:true={isMessageTypeSortedDesc}
+                  icon-name="utility:arrowdown"
+                  size="xx-small"
+                ></lightning-icon>
+              </div>
+              <div class="slds-resizable">
+                <span class="slds-resizable__handle">
+                  <span
+                    class="slds-resizable__divider"
+                    data-column="MessageType"
+                    onmousedown={handleStartResize}
+                  ></span>
+                </span>
+              </div>
+            </th>
+            <th class="slds-is-resizable" data-column="Subject" scope="col">
+              <div
+                class="slds-truncate slds-p-horizontal_xx-small"
+                title="
+                      Subject"
+              >
+                Subject
+              </div>
+              <div class="slds-resizable">
+                <span class="slds-resizable__handle">
+                  <span
+                    class="slds-resizable__divider"
+                    data-column="Subject"
+                    onmousedown={handleStartResize}
+                  ></span>
+                </span>
+              </div>
+            </th>
+            <th class="slds-is-resizable" data-column="Sent" scope="col">
+              <div
+                class="slds-truncate slds-p-horizontal_xx-small"
+                title="	
+                      Sent"
+              >
+                <span class="sortBtn" data-field="Sent__c" onclick={handleSort}
+                  >Sent</span
+                >
+                <lightning-icon
+                  if:true={isSentSortedAsc}
+                  icon-name="utility:arrowup"
+                  size="xx-small"
+                >
+                </lightning-icon>
+                <lightning-icon
+                  if:true={isSentSortedDesc}
+                  icon-name="utility:arrowdown"
+                  size="xx-small"
+                ></lightning-icon>
+              </div>
+              <div class="slds-resizable">
+                <span class="slds-resizable__handle">
+                  <span
+                    class="slds-resizable__divider"
+                    data-column="Sent"
+                    onmousedown={handleStartResize}
+                  ></span>
+                </span>
+              </div>
+            </th>
+            <th class="slds-is-resizable" data-column="Message" scope="col">
+              <div
+                class="slds-truncate slds-p-horizontal_xx-small"
+                title="	
+                      Message"
+              >
+                Message
+              </div>
+              <div class="slds-resizable">
+                <span class="slds-resizable__handle">
+                  <span
+                    class="slds-resizable__divider"
+                    data-column="Message"
+                    onmousedown={handleStartResize}
+                  ></span>
+                </span>
+              </div>
+            </th>
+            <th class="slds-is-resizable" data-column="RelatedLink" scope="col">
+              <div
+                class="slds-truncate slds-p-horizontal_xx-small"
+                title="relateddoc"
+              >
+                Related Link
+              </div>
+              <div class="slds-resizable">
+                <span class="slds-resizable__handle">
+                  <span
+                    class="slds-resizable__divider"
+                    data-column="RelatedLink"
+                    onmousedown={handleStartResize}
+                  ></span>
+                </span>
+              </div>
+            </th>
+            <th
+              class="slds-is-resizable"
+              scope="col"
+              style="width: 3.2rem"
+            ></th>
+          </tr>
+        </thead>
+        <tbody>
+          <template for:each={paginatedRecords} for:item="item">
+            <tr key={item.Id} class="slds-hint-parent">
+              <template if:false={isParent}>
+                <td
+                  class="slds-text-align_right"
+                  scope="col"
+                  style="width: 3.25rem"
+                >
+                  <lightning-input
+                    type="checkbox"
+                    data-id={item.Id}
+                    label=""
+                    onchange={handleCheckboxChange}
+                    checked={item.selected}
+                  >
+                  </lightning-input>
+                </td>
+              </template>
+              <td data-label="Business Area" data-column="BusinessArea">
+                <div class="slds-truncate">{item.Business_Area__c}</div>
+              </td>
+              <td data-label="Message Type" data-column="MessageType">
+                <div class="slds-truncate">{item.Message_Type__c}</div>
+              </td>
+              <td data-label="Subject" data-column="Subject" scope="row">
+                <div class="slds-truncate">
+                  <template if:false={item.Is_Read__c}>
+                    <div style="display: flex; gap: 3.5px; align-items: center">
+                      <div class="darkBlueDot"></div>
+                      <strong>
+                        <lightning-button
+                          variant="base"
+                          data-id={item.Id}
+                          onclick={handleSubjectAction}
+                          label={item.Subject__c}
+                        ></lightning-button>
+                        <!-- <span data-id={item.Id} onclick={handleSubjectAction}  style="color: rgb(38 116 169); cursor: pointer;">{item.Subject__c}</span> -->
+                      </strong>
+                    </div>
+                  </template>
+                  <template if:true={item.Is_Read__c}>
+                    <lightning-button
+                      variant="base"
+                      data-id={item.Id}
+                      onclick={handleSubjectAction}
+                      label={item.Subject__c}
+                    ></lightning-button>
+                  </template>
+                </div>
+              </td>
+              <td data-label="Sent" data-column="Sent">
+                <div class="slds-truncate">{item.formattedDate}</div>
+              </td>
+              <td data-label="Message" data-column="Message">
+                <div class="slds-truncate">
+                  <lightning-formatted-rich-text value={item.Message__c}>
+                  </lightning-formatted-rich-text>
+                </div>
+              </td>
+              <td class="slds-truncate" data-column="RelatedLink">
+                <lightning-formatted-url
+                  value={item.Related_Link__c}
+                  tooltip="Related PDF"
+                  target="_blank"
+                >
+                </lightning-formatted-url>
+              </td>
+              <td>
+                <lightning-icon
+                  style="cursor: pointer"
+                  icon-name="utility:archive"
+                  data-id={item.Id}
+                  onclick={archiveSelectedRecords}
+                  size="xx-small"
+                ></lightning-icon>
+              </td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </template>
+    <template if:false={isParent}>
+      <!-- Pagination Controls -->
+      <div class="pagination">
+        <lightning-button
+          label="Previous"
+          onclick={previousPage}
+          disabled={isFirstPage}
+          variant="brand-outline"
+        >
+        </lightning-button>
+
+        <span>Page {currentPage} of {totalPages}</span>
+
+        <lightning-button
+          label="Next"
+          onclick={nextPage}
+          disabled={isLastPage}
+          variant="brand-outline"
+        >
+        </lightning-button>
+      </div>
+    </template>
+  </lightning-card>
+
+  <template if:false={notifications.length}>
+    <p class="slds-m-around_medium">No notifications available.</p>
+  </template>
+
+  <template if:true={isModalOpen}>
+    <section role="dialog" class="slds-modal slds-fade-in-open">
+      <div class="slds-modal__container">
+        <div style="padding: 2px">
+          <header class="slds-modal__header">
+            <div class="slds-text-heading_medium">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="28"
+                height="28"
+                viewBox="0 0 32 32"
+                fill="none"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M31.6308 26.1508L17.5384 3.3614C16.8 2.12953 15.2 2.12953 14.4615 3.3614L0.369217 26.1508C-0.492322 27.5675 0.369217 29.5385 1.90768 29.5385H30.0923C31.6308 29.5385 32.5538 27.5675 31.6308 26.1508ZM16 24.6104C14.9538 24.6104 14.1538 23.8097 14.1538 22.7626C14.1538 21.7155 14.9538 20.9148 16 20.9148C17.0461 20.9148 17.8461 21.7155 17.8461 22.7626C17.8461 23.8097 17.0461 24.6104 16 24.6104ZM17.8461 19.0674C17.8461 19.4369 17.6 19.6833 17.2307 19.6833H14.7692C14.4 19.6833 14.1538 19.4369 14.1538 19.0674V11.0603C14.1538 10.6907 14.4 10.4443 14.7692 10.4443H17.2307C17.6 10.4443 17.8461 10.6907 17.8461 11.0603V19.0674Z"
+                  fill="#DA9601"
+                />
+              </svg>
+              <span class="slds-text-heading_medium" style="margin: 0 4px">
+                GAF Message Details
+              </span>
+            </div>
+
+            <div class="aboveHeader">
+              <strong>Message Body</strong>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 28 27"
+                fill="none"
+                onclick={closeModal}
+              >
+                <rect width="28" height="27" fill="transparent" />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M16.6924 13.1884L23.6924 6.38651C24.0154 6.07497 24.0154 5.60767 23.6924 5.29613L22.6154 4.20574C22.2924 3.8942 21.8077 3.8942 21.4847 4.20574L14.4308 11.0077C14.2154 11.2154 13.8924 11.2154 13.677 11.0077L6.62312 4.15382C6.30005 3.84228 5.81543 3.84228 5.49235 4.15382L4.36158 5.2442C4.03851 5.55574 4.03851 6.02305 4.36158 6.33459L11.4154 13.1365C11.6308 13.3442 11.6308 13.6557 11.4154 13.8634L4.30774 20.7173C3.98466 21.0288 3.98466 21.4961 4.30774 21.8077L5.43851 22.8981C5.76158 23.2096 6.2462 23.2096 6.56928 22.8981L13.6231 16.0961C13.8385 15.8884 14.1616 15.8884 14.377 16.0961L21.4308 22.8981C21.7539 23.2096 22.2385 23.2096 22.5616 22.8981L23.6924 21.8077C24.0154 21.4961 24.0154 21.0288 23.6924 20.7173L16.6924 13.9154C16.477 13.7077 16.477 13.3961 16.6924 13.1884V13.1884Z"
+                  fill="#FF3B30"
+                />
+              </svg>
+            </div>
+          </header>
+
+          <div class="slds-modal__content slds-p-around_medium">
+            <div class="slds-grid slds-gutters">
+              <div class="slds-col slds-size_1-of-3">
+                <strong>From :</strong>
+              </div>
+              <div class="slds-col slds-size_2-of-3">
+                <strong>Customer Care</strong>
+              </div>
+            </div>
+
+            <div class="slds-grid slds-gutters">
+              <div class="slds-col slds-size_1-of-3">
+                <strong>To :</strong>
+              </div>
+              <div class="slds-col slds-size_2-of-3">
+                <strong>barmstrong@dwdistribution.us</strong>
+              </div>
+            </div>
+            <div class="slds-grid slds-gutters">
+              <div class="slds-col slds-size_1-of-3">
+                <strong>Subject :</strong>
+              </div>
+              <div class="slds-col slds-size_2-of-3">
+                <strong>{selectedNotification.Subject__c}</strong>
+              </div>
+            </div>
+
+            <div class="slds-grid slds-gutters">
+              <div class="slds-col slds-size_1-of-3">
+                <strong>Sent Date: :</strong>
+              </div>
+              <div class="slds-col slds-size_2-of-3">
+                <strong>{selectedNotification.Sent__c}</strong>
+              </div>
+            </div>
+
+            <hr class="horizontalLine" />
+
+            <div class="messageContent">
+              <div class="textContent">
+                <lightning-formatted-rich-text
+                  value={selectedNotification.Message__c}
+                >
+                </lightning-formatted-rich-text>
+              </div>
+
+              <img
+                src={logoImageUrl}
+                style="margin: 8px"
+                width="150px"
+                alt="logo"
+              />
+            </div>
+          </div>
+
+          <footer
+            class="slds-modal__footer"
+            style="
+              background-color: #efebe4;
+              border: 1.5px solid #010032;
+              border-top: none;
+            "
+          >
+            <lightning-button
+              data-from="Modal"
+              variant="destructive"
+              class="customButton"
+              label="Archive"
+              onclick={archiveSelectedRecords}
+            ></lightning-button>
+            <lightning-button
+              variant="destructive"
+              label="Close"
+              onclick={closeModal}
+              class="slds-m-left_x-small customButton"
+            ></lightning-button>
+          </footer>
+        </div>
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+
+  <template if:true={isPreferencesModalOpen}>
+    <c-preferences-modal onclose={closePreferencesModal}></c-preferences-modal>
+  </template>
+</template>

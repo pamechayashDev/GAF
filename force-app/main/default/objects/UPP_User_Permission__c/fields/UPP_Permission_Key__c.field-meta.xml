@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>UPP_Permission_Key__c</fullName>
+    <caseSensitive>true</caseSensitive>
+    <description>Concatenation (Account__r.Id + Contact__r.Id + UPP_Program_Permission__r.Id)</description>
+    <externalId>true</externalId>
+    <inlineHelpText>Concatenation (Account__r.Id + Contact__r.Id + UPP_Program_Permission__r.Id)</inlineHelpText>
+    <label>UPP Permission Key</label>
+    <length>54</length>
+    <required>true</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

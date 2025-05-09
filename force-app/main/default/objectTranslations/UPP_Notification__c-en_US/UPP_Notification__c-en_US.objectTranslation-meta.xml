@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>UPP Notification</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>UPP Notifications</value>
+    </caseValues>
+    <recordTypes>
+        <label><!-- Active --></label>
+        <name>Active</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- Archived --></label>
+        <name>Archived</name>
+    </recordTypes>
+    <startsWith>Vowel</startsWith>
+    <validationRules>
+        <errorMessage><!-- Message is required --></errorMessage>
+        <name>Message_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Required when Permission Set entries are present --></errorMessage>
+        <name>Permission_Set_Assignment_Logic</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Field is Required --></errorMessage>
+        <name>Theme_Required</name>
+    </validationRules>
+</CustomObjectTranslation>

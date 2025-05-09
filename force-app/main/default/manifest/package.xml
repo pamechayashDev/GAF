@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <!-- Apex Classes -->
+    <types>
+<members>*</members>
+<name>ExperienceBundle</name>
+</types>
+<types>
+<members>*</members>
+<name>Network</name>
+</types>
+<types>
+<members>*</members>
+<name>SiteDotCom</name>
+</types>
+<types>
+<members>*</members>
+<name>CustomSite</name>
+</types>
+
+    <!-- Networks (Communities) -->
+  
+    <!-- Custom Labels -->
+    
+
+    <!--<version>52.0</version> UPPNotificationController_TestAdjust the API version if necessary -->
+</Package>

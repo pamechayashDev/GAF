@@ -1,21 +1,39 @@
 <template>
-    <lightning-card title="Messages" icon-name="utility:notification">
-     <template if:false={isParent}>
-
-      <c-upp-notifications-table from='child'></c-upp-notifications-table>
-      <div slot="footer" class="slds-text-align_right" >
-        <lightning-button variant="brand" label="Back" onclick={navigateToHome}></lightning-button>
-    </div>
-    </template>
+  <lightning-card title="Messages" icon-name="utility:notification">
     <template if:true={isParent}>
-      <c-upp-notifications-table from='parent'></c-upp-notifications-table>
-      <div slot="footer" class="slds-text-align_right" >
-        <lightning-button variant="brand" label="View All" onclick={navigateToAllNotifications}></lightning-button>
-    </div>
+      <div>
+        <c-upp-notifications-table from="parent"></c-upp-notifications-table>
+        <div slot="footer" class="slds-text-align_right">
+          <lightning-button
+            variant="brand"
+            label="Preferences"
+            style="margin: 0 10px"
+            onclick={handlePreferencesButtonClick}
+          ></lightning-button>
+          <lightning-button
+            variant="brand"
+            label="View All"
+            onclick={navigateToAllNotifications}
+          ></lightning-button>
+        </div>
+      </div>
     </template>
-        
 
-    </lightning-card>
+    <template if:false={isParent}>
+      <div>
+        <c-upp-notifications-table from="child"></c-upp-notifications-table>
+        <div slot="footer" class="slds-text-align_right">
+          <lightning-button
+            variant="brand"
+            label="Back"
+            onclick={navigateToHome}
+          ></lightning-button>
+        </div>
+      </div>
+    </template>
+  </lightning-card>
 
-   
+  <template if:true={isModalOpen}>
+    <c-cz-preferences-modal onclose={closeModal}></c-cz-preferences-modal>
+  </template>
 </template>

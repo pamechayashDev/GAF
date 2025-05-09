@@ -1,31 +1,44 @@
-import { LightningElement} from 'lwc';
+import { LightningElement, wire,track,api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 
 
+
 export default class UppNotifications extends NavigationMixin(LightningElement) {
-  
-  isParent = true;
-    navigateToAllNotifications(){
-        console.log('called');
-        this.isParent = false;
+
+    isModalOpen = false;
+
+  @api isParent ;
+
+
+
+    navigateToAllNotifications() {
+        this[NavigationMixin.Navigate]({
+            type: 'standard__webPage',
+            attributes: {
+                url: `/all-notifications`
+            }
+        });
+    }
+    navigateToHome() {
+        this[NavigationMixin.Navigate]({
+            type: 'standard__webPage',
+            attributes: {
+                url: `/`
+            }
+        });
+    }
+
+    handlePreferencesButtonClick() {
+        this.isModalOpen = true;
         
     }
-    navigateToHome(){
-        this.isParent = true; 
-    }
+closeModal(){
+    this.isModalOpen = false;
+}
+    
 
-    // navigateToAllNotifications() {
-    //     this[NavigationMixin.Navigate]({
-    //         type: 'standard__navItemPage',
-    //         attributes: {
-    //             apiName: 'All_Upp_Notifications' 
-    //         },
-    //         state: {
-    //             fromViewAll: 'true'
-    //         }
-    //     });
-    // }
- 
+   
 
+   
 
 }

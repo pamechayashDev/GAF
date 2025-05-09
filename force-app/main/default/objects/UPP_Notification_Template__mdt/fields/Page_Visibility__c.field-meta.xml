@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Page_Visibility__c</fullName>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Page Visibility</label>
+    <required>true</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>All</fullName>
+                <default>true</default>
+                <label>All</label>
+            </value>
+            <value>
+                <fullName>Home</fullName>
+                <default>false</default>
+                <label>Home</label>
+            </value>
+            <value>
+                <fullName>My Company Profile</fullName>
+                <default>false</default>
+                <label>My Company Profile</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

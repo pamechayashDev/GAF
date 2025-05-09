@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Active</fullName>
+    <active>true</active>
+    <label>Active</label>
+    <picklistValues>
+        <picklist>Business_Area__c</picklist>
+        <values>
+            <fullName>Commercial</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Mixed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Residential</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Certification_Visibility__c</picklist>
+        <values>
+            <fullName>Certified</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Mixed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Non-Certified</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Evaluate_As__c</picklist>
+        <values>
+            <fullName>All Permission Sets</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Any Permission Set</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Message_Type__c</picklist>
+        <values>
+            <fullName>Missed Pickup Appointment</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>New Statement</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Past Due Shipment</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Sales Incentive Credit Message</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Scheduled Ship Date Change</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Page_Visibility__c</picklist>
+        <values>
+            <fullName>All</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Home</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>My Company Profile</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Permission_Sets__c</picklist>
+        <values>
+            <fullName>UPP_Add_manage_and_remove_users_permissions_and_services</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>UPP_CMS_Home_Access</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>UPP_Edit_Company_Info_and_Profile</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>UPP_Manage_External_Users</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>UPP_Manage_users_permissions_and_program_enrollment</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>UPP_View_Rewards_Widget</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>UPP_View_Warranty_Guarantee_Widget</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Theme__c</picklist>
+        <values>
+            <fullName>Error</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Success</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Warning</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Type__c</picklist>
+        <values>
+            <fullName>Account Master Data Lock</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Certification Approved</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Installation Experience Provided</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Insurance Provided</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Insurance Renewal</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>License Provided</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>License Renewal</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>T%26C Signed</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

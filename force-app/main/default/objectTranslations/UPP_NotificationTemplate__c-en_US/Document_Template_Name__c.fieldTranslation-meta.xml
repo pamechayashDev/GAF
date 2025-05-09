@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Document Template Name --></label>
+    <name>Document_Template_Name__c</name>
+    <picklistValues>
+        <masterLabel>Com_NEW</masterLabel>
+        <translation><!-- Com_NEW --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Com_Signature</masterLabel>
+        <translation><!-- Com_Signature --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Com_Up_Down_AsIs</masterLabel>
+        <translation><!-- Com_Up_Down_AsIs --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>New_Comm_Certs</masterLabel>
+        <translation><!-- New_Comm_Certs --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Res_NEW</masterLabel>
+        <translation><!-- Res_NEW --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Res_Signature</masterLabel>
+        <translation><!-- Res_Signature --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Res_Up_Down_AsIs</masterLabel>
+        <translation><!-- Res_Up_Down_AsIs --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

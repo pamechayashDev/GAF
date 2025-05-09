@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Evaluate_As__c</fullName>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>How the Permission Set entries are evaluated, does the context User need to be assigned to ALL listed entries or to ANY entry.</inlineHelpText>
+    <label>Evaluate As</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>All Permission Sets</fullName>
+                <default>true</default>
+                <label>All Permission Sets</label>
+            </value>
+            <value>
+                <fullName>Any Permission Set</fullName>
+                <default>false</default>
+                <label>Any Permission Set</label>
+            </value>
+            <value>
+                <fullName>ALL</fullName>
+                <default>false</default>
+                <label>ALL</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
