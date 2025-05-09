@@ -40,7 +40,7 @@
                     <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.PO__c}</td>
                     <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.Amount_Due__c}</td>
                     <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.Currency__c}</td>
-                    <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.Upp_Statement__c}</td>
+                    <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.UPP_Statement__c}</td>
                     <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.Original_Amount__c}</td>
                     <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.Business_Type__c}</td>
                     <td style="padding: 8px 8px; border: 1px solid #ddd;">{!upps.Payment_Status__c}</td>

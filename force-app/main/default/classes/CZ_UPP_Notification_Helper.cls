@@ -30,7 +30,7 @@ public class CZ_UPP_Notification_Helper {
         for (Upp_Notification__c notif : newNotifications) {
             // Get the user’s preferences (if any)
             UPP_Notifications_Preferences__c pref = prefsByUser.get(notif.User__c);
-            
+           
             List<String> prefs = pref.Preferences__c!=null?pref.Preferences__c.split(';'):null;
             if (pref != null && prefs!=null && prefs.contains(notif.Message_Type__c)) {
                 

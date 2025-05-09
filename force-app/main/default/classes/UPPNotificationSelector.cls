@@ -73,7 +73,8 @@ public without sharing class UPPNotificationSelector extends fflib_SObjectSelect
             conditionString+=' AND Message_Type__c = :messageType';
         }
         queryFactory.setCondition(conditionString);
-        system.debug('query---'+queryFactory);
+        system.debug('query---+'+queryFactory);
+                system.debug('query++'+queryFactory.toSOQL());
         return (List<UPP_Notification__c>) Database.query(queryFactory.toSOQL());
     }
     public List<UPP_Notification__c> selectNotificationsById(List<Id> Ids){
@@ -81,6 +82,7 @@ public without sharing class UPPNotificationSelector extends fflib_SObjectSelect
         queryFactory.selectFields(getSObjectFieldList());
         queryFactory.selectField('UPP_NotificationTemplate__r.Agreement_Text__c');
         queryFactory.setCondition('Id IN :Ids');
+        system.debug(queryFactory.toSOQL());
         return (List<UPP_Notification__c>) Database.query(queryFactory.toSOQL());
     }
     public List<UPP_Notification__c> selectByTemplateAccount(String idAct,Set<id> idTemplate,String ord){
@@ -126,6 +128,7 @@ public without sharing class UPPNotificationSelector extends fflib_SObjectSelect
     public UPP_Notification__c selectById(String idnt){
         fflib_QueryFactory query = newQueryFactory();
         query.setCondition('Id=:idnt');
+        system.debug(query.toSOQL());
         return (UPP_Notification__c)Database.query(query.toSOQL());
     }
 }

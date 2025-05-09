@@ -278,7 +278,7 @@ export default class UppNotificationsTable extends LightningElement {
   @api
   getPreferedMessageTypes() {
     getUppNotificationPreferences().then((preferencesResult) => {
-      console.log("preferencesResult--" + preferencesResult);
+      console.log("preferencesResult--++" + JSON.stringify(preferencesResult));
       if (preferencesResult.length != 0) {
         this.recordsPerPage = preferencesResult[0].Records_per_page__c;
       }

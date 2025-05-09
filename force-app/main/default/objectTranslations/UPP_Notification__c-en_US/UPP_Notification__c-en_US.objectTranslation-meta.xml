@@ -8,13 +8,6 @@
         <plural>true</plural>
         <value>UPP Notifications</value>
     </caseValues>
-    <layouts>
-        <layout>UPP Notification Layout</layout>
-        <sections>
-            <label><!-- Custom Links --></label>
-            <section>Custom Links</section>
-        </sections>
-    </layouts>
     <recordTypes>
         <label><!-- Active --></label>
         <name>Active</name>

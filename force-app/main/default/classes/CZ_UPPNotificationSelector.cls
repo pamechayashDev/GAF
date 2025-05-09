@@ -74,6 +74,7 @@ public inherited sharing class CZ_UPPNotificationSelector extends fflib_SObjectS
         }
         queryFactory.setCondition(conditionString);
         system.debug('query---'+queryFactory);
+             system.debug('query - '+queryFactory.toSOQL());
         return (List<UPP_Notification__c>) Database.query(queryFactory.toSOQL());
     }
     public List<UPP_Notification__c> selectNotificationsById(List<Id> Ids){
@@ -126,6 +127,7 @@ public inherited sharing class CZ_UPPNotificationSelector extends fflib_SObjectS
     public UPP_Notification__c selectById(String idnt){
         fflib_QueryFactory query = newQueryFactory();
         query.setCondition('Id=:idnt');
+    
         return (UPP_Notification__c)Database.query(query.toSOQL());
     }
 }

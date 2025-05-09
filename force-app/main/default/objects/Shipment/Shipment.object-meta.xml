@@ -134,21 +134,33 @@
         <customTabListAdditionalFields>LastModifiedBy</customTabListAdditionalFields>
         <customTabListAdditionalFields>SourceLocation</customTabListAdditionalFields>
         <customTabListAdditionalFields>DestinationLocation</customTabListAdditionalFields>
+        <customTabListAdditionalFields>FulfillmentOrder</customTabListAdditionalFields>
+        <customTabListAdditionalFields>OrderSummary</customTabListAdditionalFields>
+        <customTabListAdditionalFields>DeliveryMethod</customTabListAdditionalFields>
         <customTabListAdditionalFields>ReturnOrder</customTabListAdditionalFields>
         <lookupDialogsAdditionalFields>LastModifiedDate</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>LastModifiedBy</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>SourceLocation</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>DestinationLocation</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>FulfillmentOrder</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>OrderSummary</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>DeliveryMethod</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>ReturnOrder</lookupDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>LastModifiedDate</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>LastModifiedBy</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>SourceLocation</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>DestinationLocation</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>FulfillmentOrder</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>OrderSummary</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>DeliveryMethod</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>ReturnOrder</lookupPhoneDialogsAdditionalFields>
         <searchResultsAdditionalFields>LastModifiedDate</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>LastModifiedBy</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>SourceLocation</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>DestinationLocation</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>FulfillmentOrder</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>OrderSummary</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>DeliveryMethod</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>ReturnOrder</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>

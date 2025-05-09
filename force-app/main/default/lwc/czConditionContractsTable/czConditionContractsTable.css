@@ -1,0 +1,135 @@
+.filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+  flex: 1 1 auto;
+}
+
+.dates {
+  display: flex;
+  gap: 10px;
+}
+
+.dateContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-container-cover {
+  background: #1818181a;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.expandable {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
+.clear-button {
+  color: red;
+  cursor: pointer;
+}
+
+.filter-group {
+  min-width: 190px;
+  position: relative;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.slds-modal__container {
+  max-width: 800px;
+}
+
+.slds-modal__header {
+  background-color: #efebe4;
+  border: 1.5px solid #010032;
+  border-bottom: none;
+  font-weight: bold;
+  padding: 5px;
+}
+label {
+  position: absolute;
+}
+.slds-modal__content {
+  font-size: 14px;
+  line-height: 1.5;
+  background-color: #efebe4;
+  border-left: 1.5px solid #010032;
+  border-right: 1.5px solid #010032;
+}
+
+.slds-modal__footer {
+  text-align: right;
+}
+
+.horizontalLine {
+  color: #010032;
+  margin: 9px;
+}
+.slds-text-heading_medium {
+  background-color: #c8c4c0;
+  padding: 3px;
+  color: #010032;
+  text-align: left;
+}
+
+.aboveHeader {
+  background-color: #cccccc;
+  padding: 4px 9px;
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  top: -1.9rem;
+  width: 100%;
+  border-radius: 3px;
+  left: -2px;
+}
+.messageContent {
+  background-color: white;
+  padding: 8px 12px;
+  overflow-y: scroll;
+  max-height: 350px;
+}
+:host .customButton {
+  --slds-c-button-radius-border: 0%;
+  --sds-c-button-destructive-color-background: #010032;
+  --sds-c-button-destructive-color-border: #010032;
+}
+.sortBtn {
+  cursor: pointer;
+}
+td {
+  max-width: 200px;
+}
+tr {
+  max-height: 100px !important;
+}
+.darkBlueDot {
+  height: 9px;
+  width: 9px;
+  border-radius: 50%;
+  background-color: #1290d6;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.pagination span {
+  margin: 0 10px;
+  font-weight: bold;
+}

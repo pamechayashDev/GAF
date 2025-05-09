@@ -8,18 +8,18 @@
 <template>
   <div
     class="statementContainer slds-p-around_small slds-box"
-    style="overflow-x: hidden"
+    style="overflow-x: hidden; padding-bottom: 50px"
   >
     <h2 class="slds-m-bottom_small slds-text-heading_medium">Statements</h2>
 
     <div
       class="filtersContainer slds-grid slds-m-vertical_small"
-      style="flex-wrap: wrap"
+      style="flex-wrap: wrap; align-items: center"
     >
       <lightning-combobox
         name="location"
         label="Select Location Name"
-        value={locationValue}
+        value={filters.location}
         options={locationOptions}
         placeholder="Select Location"
         class="slds-p-right_small"
@@ -31,7 +31,7 @@
       <lightning-combobox
         name="statementDate"
         label="Select Statement Date"
-        value={dateValue}
+        value={filters.statementDate}
         placeholder="Select Statement Date"
         options={statementDateOptions}
         style="min-width: 300px"
@@ -39,17 +39,55 @@
         onchange={handleFilterChange}
       >
       </lightning-combobox>
-    </div>
-    <h2 class="slds-m-vertical_small slds-text-heading_medium">
-      Current Open Items
-    </h2>
-    <div n class="slds-m-vertical_small">
+
       <lightning-button
-        label="View Current Open Items"
-        onclick={handleApplyFilters}
+        label="Download"
+        onclick={handleDownloadDoc}
+        disabled={isDownloadDisabled}
         variant="destructive"
       ></lightning-button>
     </div>
+
+    <h2 class="slds-m-vertical_small slds-text-heading_medium">
+      Current Open Items
+    </h2>
+    <div class="slds-m-vertical_small">
+      <lightning-button
+        label="View Current Open Items"
+        variant="destructive"
+      ></lightning-button>
+    </div>
+    <div
+      style="
+        display: flex;
+        gap: 20px;
+        width: 100%;
+        justify-content: end;
+        margin-bottom: 30px;
+      "
+    >
+      <lightning-button-menu alternative-text="Show menu" label="Actions">
+        <lightning-menu-item
+          disabled={selectedStatement}
+          label="Export CSV"
+          onclick={downloadCSV}
+        >
+        </lightning-menu-item>
+        <lightning-menu-item
+          onclick={downloadPDF}
+          disabled={selectedStatement}
+          label="Export PDF"
+        >
+        </lightning-menu-item>
+        <lightning-menu-item
+          disabled={selectedStatement}
+          onclick={handleDownloadPNG}
+          label="Export PNG"
+        >
+        </lightning-menu-item>
+      </lightning-button-menu>
+    </div>
+
     <lightning-datatable
       key-field="Id"
       data={documents}

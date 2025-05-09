@@ -11,7 +11,8 @@ public with sharing class UPPNotificationController {
         
         
         UPPNotificationSelector notificationSelector =  new UPPNotificationSelector();
-        
+      
+        system.debug('calling');
         // Call selectNotifications from the selector
         return notificationSelector.selectNotifications(
             currentUserId,
@@ -96,20 +97,20 @@ public with sharing class UPPNotificationController {
     
     @AuraEnabled
     public static List<String> getUserPermissions(){
-        
+        system.debug('inside getUserPermissions');
         List<String> resultPermissions = new List<String>();
         
         Map<String, String>  programPreferenceMapping =  getProgramPreferenceMappings();
         UserSelector userSelector =  new UserSelector();
         
-        Id currentUserContactId = userSelector.selectUserById(new List<Id>{UserInfo.getUserId()}).ContactId;
+        Id currentUserContactId = userSelector.selectUserById(new List<Id>{'005DL00000JAUAE'}).ContactId;
         UPPUserPermissionSelector userPermissionSelector =  new  UPPUserPermissionSelector();
         List<UPP_User_Permission__c> userPermissions = userPermissionSelector.selectPermissionsByContactId(currentUserContactId);
         
         for(UPP_User_Permission__c permission: userPermissions){
             resultPermissions.add(programPreferenceMapping.get(permission.Permission_Set_Api_Name__c));
         }
-        
+        system.debug('resultPermissions'+resultPermissions);
         return resultPermissions;
         
     }
