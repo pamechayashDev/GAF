@@ -7,6 +7,7 @@ import { updateRecord } from "lightning/uiRecordApi";
 import { getObjectInfo, getPicklistValues } from "lightning/uiObjectInfoApi";
 import logo from "@salesforce/resourceUrl/logo";
 import UPP_OBJECT from "@salesforce/schema/UPP_Notification__c";
+
 import MESSAGETYPE from "@salesforce/schema/UPP_Notification__c.Message_Type__c";
 import saveOrUpdatePreferences from "@salesforce/apex/CZ_UPPNotificationController.saveOrUpdatePreferences";
 
@@ -51,11 +52,7 @@ export default class UppNotificationsTable extends LightningElement {
   }
   get paginatedRecords() {
     const start = (this.currentPage - 1) * this.recordsPerPage;
-    const end = start + this.recordsPerPage;
-    console.log(
-      "this.notifications.slice(start, end);" +
-        JSON.stringify(this.notifications.slice(start, end))
-    );
+    const end = start + Number(this.recordsPerPage);
     return this.notifications.slice(start, end);
   }
   nextPage() {
@@ -107,7 +104,6 @@ export default class UppNotificationsTable extends LightningElement {
       this.checkedIds.push(row.Id);
       return { ...row, selected: this.allSelected };
     });
-    console.log("selectAll" + JSON.stringify(this.checkedIds));
   }
 
   handleCheckboxChange(event) {
@@ -118,7 +114,6 @@ export default class UppNotificationsTable extends LightningElement {
       this.checkedIds.push(recId);
     } else {
       this.checkedIds = this.checkedIds.filter((item) => item !== recId);
-      console.log(JSON.stringify(this.checkedIds));
     }
   }
   archiveSelectedRecords(event) {
@@ -150,7 +145,7 @@ export default class UppNotificationsTable extends LightningElement {
       .then((res) => {
         this.applyFilters();
         this.closeModal();
-        this.showToast("Success", "Archived Recoreds", "Success");
+        this.showToast("Success", "Archived Records", "Success");
       })
       .catch((error) => {
         this.showToast("Error", "Error Occured", "Error");
@@ -162,7 +157,6 @@ export default class UppNotificationsTable extends LightningElement {
   handleSort(event) {
     const field = event.currentTarget.dataset.field;
     this.sortBy = field;
-    console.log(this.sortBy);
     // Toggle Sort Direction
     this.sortDirection = this.sortDirection == "asc" ? "desc" : "asc";
 
@@ -242,16 +236,17 @@ export default class UppNotificationsTable extends LightningElement {
   };
 
   recordTypes = [];
-  objectInfo;
+  objectInfo = {};
+  defaultRecordTypeId = "";
   @wire(getObjectInfo, { objectApiName: UPP_OBJECT })
-  wriedObjectInfo({ data, error }) {
+  handleObjectInfo(response) {
+    let { data, error } = response;
     if (data) {
       this.objectInfo = data;
       let recordTypesData = this.objectInfo.recordTypeInfos;
-      console.log("recordTypesData" + JSON.stringify(recordTypesData));
-      this.recordTypes = Object.keys(recordTypesData);
+      this.defaultRecordTypeId = this.objectInfo.defaultRecordTypeId;
 
-      console.log("this.recordTypes" + JSON.stringify(this.recordTypes));
+      this.recordTypes = Object.keys(recordTypesData);
     } else {
       console.log("error in fetching Object Info :" + error);
     }
@@ -260,16 +255,18 @@ export default class UppNotificationsTable extends LightningElement {
   @track messageTypePicklistValue = [];
 
   @wire(getPicklistValues, {
-    recordTypeId: "$this.objectInfo.defaultRecordTypeId",
+    recordTypeId: "$defaultRecordTypeId",
     fieldApiName: MESSAGETYPE
   })
   wiredData({ data, error }) {
     if (data) {
       this.messageTypePicklistValue.push({ label: "None", value: "None" });
+      console.log("data.values" + JSON.stringify(data.values));
       this.messageTypePicklistValue = [
         ...this.messageTypePicklistValue,
         ...data.values
       ];
+      console.log("data.values" + JSON.stringify(data.values));
     } else {
       console.log("error in fetching picklist message types : " + error);
     }
@@ -278,12 +275,9 @@ export default class UppNotificationsTable extends LightningElement {
   @api
   getPreferedMessageTypes() {
     getUppNotificationPreferences().then((preferencesResult) => {
-      console.log("preferencesResult--++" + JSON.stringify(preferencesResult));
       if (preferencesResult.length != 0) {
         this.recordsPerPage = preferencesResult[0].Records_per_page__c;
       }
-
-      console.log(this.recordsPerPage);
       this.getNotificationData();
     });
   }
@@ -319,7 +313,6 @@ export default class UppNotificationsTable extends LightningElement {
                 ? this.formatDate(notification.Sent__c)
                 : ""
           }));
-          console.log("Data for test=" + JSON.stringify(this.notifications));
         }
       })
       .catch((error) => {
@@ -353,17 +346,34 @@ export default class UppNotificationsTable extends LightningElement {
       this.showArchived = checked;
     } else if (name === "dateFrom") {
       const today = new Date().toISOString().split("T")[0];
-      value > today
-        ? this.showToast("Error", "From Date cannot be in the future", "error")
-        : (this.dateFrom = value);
+
+      if (value > today) {
+        this.showToast("Error", "From Date cannot be in the future", "error");
+      } else if (this.dateTo && value > this.dateTo) {
+        this.showToast("Error", "From Date cannot be after To Date", "error");
+      } else {
+        this[name] = value;
+      }
+    } else if (name === "dateTo") {
+      if (this.dateFrom && value < this.dateFrom) {
+        this.showToast(
+          "Error",
+          "\'To Date\' cannot be before \'From Date\'",
+          "error"
+        );
+      } else {
+        this[name] = value;
+      }
     } else {
       this[name] = value;
+    }
+    if (name === "recordsPerPage") {
+      this.currentPage = 1;
     }
   }
 
   //applying filters
   applyFilters() {
-    console.log("showArchived===" + this.showArchived);
     getNotifications({
       dateFrom: this.dateFrom,
       dateTo: this.dateTo,
@@ -384,8 +394,6 @@ export default class UppNotificationsTable extends LightningElement {
                 ? this.formatDate(notification.Sent__c)
                 : ""
           }));
-
-          console.log("data--" + JSON.stringify(data));
         }
       })
       .catch((error) => {

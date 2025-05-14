@@ -16,7 +16,7 @@ export default class PreferencesModal extends LightningElement {
 
   async connectedCallback() {
     let permissionList = await getUserPermissions();
-
+    permissionList = [...new Set(permissionList)];
     console.log("permissionList" + permissionList);
     this.options = permissionList.map((preference) => {
       return {
