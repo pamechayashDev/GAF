@@ -101,7 +101,7 @@ public with sharing class CZ_UPPNotificationController {
 		Map<String, String> programPreferenceMapping = getProgramPreferenceMappings();
 		CZ_UserSelector userSelector = new CZ_UserSelector();
 
-		Id currentUserContactId = userSelector.selectUserById(new List<Id>{ UserInfo.getUserId() }).ContactId;
+		Id currentUserContactId = userSelector.selectUserById(new List<Id>{ '005DL00000JAUAEYA5' }).ContactId;
 		CZ_UPPUserPermissionSelector userPermissionSelector = new CZ_UPPUserPermissionSelector();
 		List<UPP_User_Permission__c> userPermissions = userPermissionSelector.selectPermissionsByContactId(
 			currentUserContactId

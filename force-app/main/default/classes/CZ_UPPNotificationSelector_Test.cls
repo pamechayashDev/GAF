@@ -27,8 +27,8 @@ public class CZ_UPPNotificationSelector_Test {
         insert portalUser;
         System.runAs(portalUser) {
             PermissionSet permSet = [SELECT Id FROM PermissionSet WHERE Name = 'CommunityUserPermissions'];
-        PermissionSetAssignment permissions = new PermissionSetAssignment(AssigneeId = portalUser.Id, PermissionSetId = permSet.Id);
-        insert permissions;
+        	PermissionSetAssignment permissions = new PermissionSetAssignment(AssigneeId = portalUser.Id, PermissionSetId = permSet.Id);
+            insert permissions;
         }
             
             

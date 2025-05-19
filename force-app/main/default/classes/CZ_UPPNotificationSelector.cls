@@ -58,7 +58,8 @@ public inherited sharing class CZ_UPPNotificationSelector extends fflib_SObjectS
             system.debug('queryFactory'+queryFactory);
         }
         
-        
+        System.debug('dateFrom'+dateFrom);
+        System.debug('dateFrom'+dateTo);
         if (messageStatus != 'None') {
             Boolean isRead = (messageStatus == 'Unread Only') ? false : true;
             conditionString+=' AND Is_Read__c = :isRead';
@@ -67,7 +68,9 @@ public inherited sharing class CZ_UPPNotificationSelector extends fflib_SObjectS
             conditionString+=' AND Sent__c >= :dateFrom';
         }
         if (dateTo != null) {
-            conditionString+=' AND Sent__c <= :dateTo';
+            dateTo = dateTo.addDays(1);
+            system.debug(dateTo);
+            conditionString+=' AND Sent__c < :dateTo';
         }
         if (messageType != 'None') {
             conditionString+=' AND Message_Type__c = :messageType';

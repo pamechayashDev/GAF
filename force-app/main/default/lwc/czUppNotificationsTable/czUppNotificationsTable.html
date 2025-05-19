@@ -394,7 +394,7 @@
     <p class="slds-m-around_medium">No notifications available.</p>
   </template>
 
-  <template if:true={isModalOpen}>
+  <!-- <template if:true={isModalOpen}>
     <section role="dialog" class="slds-modal slds-fade-in-open">
       <div class="slds-modal__container">
         <div style="padding: 2px">
@@ -417,26 +417,6 @@
               <span class="slds-text-heading_medium" style="margin: 0 4px">
                 GAF Message Details
               </span>
-            </div>
-
-            <div class="aboveHeader">
-              <strong>Message Body</strong>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 28 27"
-                fill="none"
-                onclick={closeModal}
-              >
-                <rect width="28" height="27" fill="transparent" />
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M16.6924 13.1884L23.6924 6.38651C24.0154 6.07497 24.0154 5.60767 23.6924 5.29613L22.6154 4.20574C22.2924 3.8942 21.8077 3.8942 21.4847 4.20574L14.4308 11.0077C14.2154 11.2154 13.8924 11.2154 13.677 11.0077L6.62312 4.15382C6.30005 3.84228 5.81543 3.84228 5.49235 4.15382L4.36158 5.2442C4.03851 5.55574 4.03851 6.02305 4.36158 6.33459L11.4154 13.1365C11.6308 13.3442 11.6308 13.6557 11.4154 13.8634L4.30774 20.7173C3.98466 21.0288 3.98466 21.4961 4.30774 21.8077L5.43851 22.8981C5.76158 23.2096 6.2462 23.2096 6.56928 22.8981L13.6231 16.0961C13.8385 15.8884 14.1616 15.8884 14.377 16.0961L21.4308 22.8981C21.7539 23.2096 22.2385 23.2096 22.5616 22.8981L23.6924 21.8077C24.0154 21.4961 24.0154 21.0288 23.6924 20.7173L16.6924 13.9154C16.477 13.7077 16.477 13.3961 16.6924 13.1884V13.1884Z"
-                  fill="#FF3B30"
-                />
-              </svg>
             </div>
           </header>
 
@@ -518,6 +498,81 @@
             ></lightning-button>
           </footer>
         </div>
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template> -->
+  <template if:true={isModalOpen}>
+    <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+      <div class="slds-modal__container">
+        <!-- Modal Header -->
+        <header class="slds-modal__header">
+          <h2 class="slds-modal__title slds-hyphenate">
+            {selectedNotification.Subject__c}
+          </h2>
+        </header>
+
+        <!-- Modal Body -->
+        <div class="slds-modal__content slds-p-around_medium">
+          <div
+            style="display: flex; flex-direction: column; gap: 3px; width: 70%"
+          >
+            <p class="messageDetail">
+              <strong>From:</strong>
+              <span class="detailValues"> Customer Care </span>
+            </p>
+            <p class="messageDetail">
+              <strong>To:</strong>
+              <span class="detailValues">
+                customer@customerdistribution.com
+              </span>
+            </p>
+            <p class="messageDetail">
+              <strong>Subject:</strong>
+              <span class="detailValues">
+                {selectedNotification.Subject__c}
+              </span>
+            </p>
+            <p class="messageDetail">
+              <strong>Sent Date:</strong>
+              <span class="detailValues"> {selectedNotification.Sent__c} </span>
+            </p>
+          </div>
+          <hr style="margin: 15px 0px" />
+
+          <div class="slds-m-top_medium" style="color: gray">
+            <lightning-formatted-rich-text
+              value={selectedNotification.Message__c}
+            >
+            </lightning-formatted-rich-text>
+
+            <div class="slds-m-top_medium">
+              <img
+                src={logoImageUrl}
+                style="margin: 8px"
+                width="150px"
+                alt="logo"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <footer class="slds-modal__footer" style="text-align: center">
+          <button
+            class="slds-button slds-button_neutral"
+            onclick={archiveSelectedRecords}
+            style="color: red"
+          >
+            Archive
+          </button>
+          <button
+            class="slds-button slds-button_destructive"
+            onclick={closeModal}
+          >
+            Close
+          </button>
+        </footer>
       </div>
     </section>
     <div class="slds-backdrop slds-backdrop_open"></div>
